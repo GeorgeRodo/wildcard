@@ -6,13 +6,10 @@
   min-width: 0;
   margin: 0;
   overflow: hidden;
-  cursor: pointer;
-  outline: none;
   transition: flex-grow var(--expand-duration) ease;
 }
 
-.tile:hover,
-.tile:focus {
+.tile:hover {
   flex-grow: 3;
 }
 
@@ -24,7 +21,7 @@
 }
 
 /* Dim the other tiles so the expanded one stands out. */
-:global(main):has(.tile:hover, .tile:focus) .tile:not(:hover, :focus) .image {
+:global(main):has(.tile:hover) .tile:not(:hover) .image {
   filter: brightness(0.55) saturate(0.8);
 }
 
@@ -46,8 +43,7 @@
 }
 
 /* Wait for the tile to finish expanding before showing the text. */
-.tile:hover .info,
-.tile:focus .info {
+.tile:hover .info {
   opacity: 1;
   visibility: visible;
   transform: none;
