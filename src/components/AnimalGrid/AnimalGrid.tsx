@@ -5,7 +5,7 @@ import { AnimalTile } from '../AnimalTile'
 import styles from './AnimalGrid.module.css'
 
 /** How long the pointer has to rest on a photo before it expands. */
-const HOVER_DELAY_MS = 1000
+const HOVER_DELAY_MS = 400
 
 interface AnimalGridProps {
   animals: GalleryItem[]
