@@ -21,14 +21,27 @@ npm run dev
 | `npm run build`   | Type-check and build for production |
 | `npm run preview` | Preview the production build        |
 | `npm run lint`    | Lint the project with Oxlint        |
+| `npm run optimize-images` | Build web-sized photos from the originals |
 
 ## Adding an animal
 
 1. Add an entry to `src/data/animals.ts`.
-2. Put its photo in `src/assets/animals/`, named after the entry's `id`
+2. Put the original photo in `photos/`, named after the entry's `id`
    (for example `red-fox.jpg`).
+3. Run `npm run optimize-images`.
 
 Animals without a photo are skipped, so the grid never shows an empty tile.
+
+## Photos
+
+`photos/` holds the full-size originals and is kept out of git.
+`npm run optimize-images` resizes them to 1200px WebP files in
+`src/assets/animals/`, which is what the site loads. Photos that are
+already converted are skipped; pass `--force` to rebuild them all.
+
+Keeping the originals out of the build matters here: every photo on the
+page is decoded into memory at once, so full-size files make the page slow
+to load and heavy to render.
 
 ## How the layout works
 

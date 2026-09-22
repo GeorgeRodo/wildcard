@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Original photos; run "npm run optimize-images" to build the web-sized copies
+photos
