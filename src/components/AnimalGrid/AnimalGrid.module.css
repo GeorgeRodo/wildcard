@@ -16,3 +16,17 @@
 .row[data-expanded] {
   flex-grow: 1.5;
 }
+
+/* On tall screens, turn the rows into columns so tiles stay closer to
+   square instead of becoming thin slivers. */
+@media (orientation: portrait) {
+  .grid {
+    flex-direction: row;
+  }
+
+  .row {
+    flex-direction: column;
+    min-height: auto;
+    min-width: 0;
+  }
+}
