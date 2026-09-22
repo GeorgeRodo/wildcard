@@ -1,13 +1,103 @@
 .tile {
+  --expand-duration: 0.5s;
+
   position: relative;
   flex: 1 1 0;
   min-width: 0;
   margin: 0;
   overflow: hidden;
+  cursor: pointer;
+  outline: none;
+  transition: flex-grow var(--expand-duration) ease;
+}
+
+.tile:hover,
+.tile:focus {
+  flex-grow: 3;
 }
 
 .image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: filter 0.3s ease;
+}
+
+/* Dim the other tiles so the expanded one stands out. */
+:global(main):has(.tile:hover, .tile:focus) .tile:not(:hover, :focus) .image {
+  filter: brightness(0.55) saturate(0.8);
+}
+
+.info {
+  position: absolute;
+  inset: auto 0 0;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 3rem 1.5rem 1.25rem;
+  color: #fff;
+  background: linear-gradient(to top, rgb(0 0 0 / 0.85) 40%, transparent);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(1rem);
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease,
+    visibility 0s linear 0.15s;
+}
+
+/* Wait for the tile to finish expanding before showing the text. */
+.tile:hover .info,
+.tile:focus .info {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    opacity 0.3s ease var(--expand-duration),
+    transform 0.3s ease var(--expand-duration),
+    visibility 0s;
+}
+
+.name {
+  margin: 0;
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+.scientificName {
+  margin: 0.15rem 0 0.75rem;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.description,
+.fact {
+  margin: 0;
+  max-width: 60ch;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.fact {
+  margin-top: 0.75rem;
+}
+
+.factLabel {
+  display: block;
+  margin-bottom: 0.15rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #f5c542;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tile {
+    --expand-duration: 0s;
+  }
+
+  .tile,
+  .info {
+    transition: none;
+  }
 }

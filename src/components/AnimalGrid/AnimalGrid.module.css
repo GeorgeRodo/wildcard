@@ -9,4 +9,16 @@
   display: flex;
   flex: 1 1 0;
   min-height: 0;
+  transition: flex-grow 0.5s ease;
+}
+
+/* Give the row with the expanded tile more height too. */
+.row:has(> :hover, > :focus) {
+  flex-grow: 2.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .row {
+    transition: none;
+  }
 }
