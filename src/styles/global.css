@@ -1,6 +1,6 @@
 :root {
   /* Shared by the grid rows and tiles so they expand in sync. */
-  --expand-duration: 0.7s;
+  --expand-duration: 0.3s;
   --expand-ease: cubic-bezier(0.25, 1, 0.5, 1);
 }
 
