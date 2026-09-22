@@ -1,12 +1,10 @@
 .tile {
-  --expand-duration: 0.5s;
-
   position: relative;
   flex: 1 1 0;
   min-width: 0;
   margin: 0;
   overflow: hidden;
-  transition: flex-grow var(--expand-duration) ease;
+  transition: flex-grow var(--expand-duration) var(--expand-ease);
 }
 
 .tile:hover {
@@ -17,7 +15,14 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: filter 0.3s ease;
+  transition:
+    filter var(--expand-duration) var(--expand-ease),
+    transform calc(var(--expand-duration) * 2) var(--expand-ease);
+}
+
+/* Slow push-in on the photo while the tile opens up. */
+.tile:hover .image {
+  transform: scale(1.05);
 }
 
 /* Dim the other tiles so the expanded one stands out. */
@@ -42,14 +47,15 @@
     visibility 0s linear 0.15s;
 }
 
-/* Wait for the tile to finish expanding before showing the text. */
+/* Bring the text in once the tile is mostly open, so it doesn't reflow
+   while the tile is still growing. */
 .tile:hover .info {
   opacity: 1;
   visibility: visible;
   transform: none;
   transition:
-    opacity 0.3s ease var(--expand-duration),
-    transform 0.3s ease var(--expand-duration),
+    opacity 0.4s var(--expand-ease) calc(var(--expand-duration) * 0.6),
+    transform 0.4s var(--expand-ease) calc(var(--expand-duration) * 0.6),
     visibility 0s;
 }
 
@@ -88,12 +94,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tile {
-    --expand-duration: 0s;
-  }
-
-  .tile,
-  .info {
-    transition: none;
+  .tile:hover .image {
+    transform: none;
   }
 }
