@@ -1,0 +1,1 @@
+export { AnimalTile } from './AnimalTile'

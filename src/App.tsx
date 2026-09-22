@@ -1,12 +1,11 @@
-import { BackgroundGrid } from './components/BackgroundGrid'
-import { backgrounds } from './data/backgrounds'
+import { AnimalGrid } from './components/AnimalGrid'
+import { gallery } from './data/gallery'
 
 function App() {
   return (
-    <>
-      <BackgroundGrid images={backgrounds} />
-      <main />
-    </>
+    <main>
+      <AnimalGrid animals={gallery} />
+    </main>
   )
 }
 

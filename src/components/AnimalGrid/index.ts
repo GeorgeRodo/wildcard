@@ -1,0 +1,1 @@
+export { AnimalGrid } from './AnimalGrid'
