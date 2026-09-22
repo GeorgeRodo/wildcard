@@ -42,26 +42,31 @@
   overflow: hidden;
   padding: 2rem 1rem 0.9rem;
   color: #fff;
-  background: linear-gradient(to top, rgb(0 0 0 / 0.85) 40%, transparent);
+  /* Solid enough behind the text to stay readable on bright photos,
+     fading out only above the name. */
+  background: linear-gradient(
+    to top,
+    rgb(0 0 0 / 0.85),
+    rgb(0 0 0 / 0.7) calc(100% - 2rem),
+    transparent
+  );
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.5);
+  /* Hidden with opacity only, so screen readers can still read it. */
   opacity: 0;
-  visibility: hidden;
   transform: translateY(0.5rem);
   transition:
     opacity 0.15s ease,
-    transform 0.15s ease,
-    visibility 0s linear 0.15s;
+    transform 0.15s ease;
 }
 
 /* Bring the text in once the tile is mostly open, so it doesn't reflow
    while the tile is still growing. */
 .tile[data-expanded] .info {
   opacity: 1;
-  visibility: visible;
   transform: none;
   transition:
     opacity 0.25s var(--expand-ease) calc(var(--expand-duration) * 0.6),
-    transform 0.25s var(--expand-ease) calc(var(--expand-duration) * 0.6),
-    visibility 0s;
+    transform 0.25s var(--expand-ease) calc(var(--expand-duration) * 0.6);
 }
 
 .name {
