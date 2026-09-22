@@ -3,11 +3,27 @@ import styles from './AnimalTile.module.css'
 
 interface AnimalTileProps {
   animal: GalleryItem
+  expanded: boolean
+  dimmed: boolean
+  onMouseEnter: () => void
+  onMouseLeave: () => void
 }
 
-export function AnimalTile({ animal }: AnimalTileProps) {
+export function AnimalTile({
+  animal,
+  expanded,
+  dimmed,
+  onMouseEnter,
+  onMouseLeave,
+}: AnimalTileProps) {
   return (
-    <figure className={styles.tile}>
+    <figure
+      className={styles.tile}
+      data-expanded={expanded || undefined}
+      data-dimmed={dimmed || undefined}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       <img className={styles.image} src={animal.image} alt={animal.name} />
       <figcaption className={styles.info}>
         <h2 className={styles.name}>{animal.name}</h2>

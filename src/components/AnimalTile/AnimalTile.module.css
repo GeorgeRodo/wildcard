@@ -8,7 +8,7 @@
   transition: flex-grow var(--expand-duration) var(--expand-ease);
 }
 
-.tile:hover {
+.tile[data-expanded] {
   flex-grow: 1.7;
 }
 
@@ -16,16 +16,27 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: filter var(--expand-duration) var(--expand-ease);
 }
 
-/* Dim the other tiles so the expanded one stands out. */
-:global(main):has(.tile:hover) .tile:not(:hover) .image {
-  filter: brightness(0.55) saturate(0.8);
+/* Dark overlay for the tiles that aren't expanded. Animating the overlay's
+   opacity is much cheaper than animating a filter on every photo. */
+.tile::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--expand-duration) var(--expand-ease);
+}
+
+.tile[data-dimmed]::after {
+  opacity: 0.45;
 }
 
 .info {
   position: absolute;
+  z-index: 1;
   inset: auto 0 0;
   max-height: 100%;
   overflow: hidden;
@@ -43,13 +54,13 @@
 
 /* Bring the text in once the tile is mostly open, so it doesn't reflow
    while the tile is still growing. */
-.tile:hover .info {
+.tile[data-expanded] .info {
   opacity: 1;
   visibility: visible;
   transform: none;
   transition:
-    opacity 0.4s var(--expand-ease) calc(var(--expand-duration) * 0.6),
-    transform 0.4s var(--expand-ease) calc(var(--expand-duration) * 0.6),
+    opacity 0.25s var(--expand-ease) calc(var(--expand-duration) * 0.6),
+    transform 0.25s var(--expand-ease) calc(var(--expand-duration) * 0.6),
     visibility 0s;
 }
 

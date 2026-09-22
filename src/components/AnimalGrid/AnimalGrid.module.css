@@ -13,6 +13,6 @@
 }
 
 /* Give the row with the expanded tile more height too. */
-.row:has(> :hover) {
+.row[data-expanded] {
   flex-grow: 1.5;
 }
