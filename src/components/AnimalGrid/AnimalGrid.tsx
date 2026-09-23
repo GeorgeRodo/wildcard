@@ -6,7 +6,7 @@ import { AnimalTile } from '../AnimalTile'
 import styles from './AnimalGrid.module.css'
 
 /** Rows on screen. The number of columns follows from how many animals there are. */
-const ROWS = 4
+const ROWS = 5
 
 /** How long the pointer has to rest on a photo before it expands. */
 const HOVER_DELAY_MS = 400
