@@ -25,3 +25,6 @@ dist-ssr
 
 # Original photos; run "npm run optimize-images" to build the web-sized copies
 photos
+
+# Local secrets
+.env.local

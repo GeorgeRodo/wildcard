@@ -54,15 +54,34 @@ to load and heavy to render.
 
 ## Live data
 
-The shuffle calls iNaturalist's observations endpoint rather than its taxa
-endpoint, because only observations can be filtered by photo licence, and
-the site may only show photos it is allowed to show. Results are ordered by
-community votes, so the photos are ones people have picked out.
+Species come from a Supabase table seeded from iNaturalist. Asking
+iNaturalist directly works, but their search takes three to ten seconds,
+which is far too long to wait after a button press. Harvesting once and
+reading a random row takes milliseconds.
 
-`src/api/inaturalist.ts` handles the request and maps the response;
-`useRandomSpecies` owns the loading, error and retry states, cancels a
-request that is replaced, times out after 10 seconds, caches taxon details
-for the session and remembers the last ten animals so they don't repeat.
+- `supabase/schema.sql` — the table, its read-only row-level security
+  policy, and a `random_animal()` function that skips recently seen ids.
+- `scripts/seed-animals.mjs` — harvests species from iNaturalist and
+  upserts them. Run with `npm run seed`.
+- `src/api/supabase.ts` — reads one random row.
+- `src/api/inaturalist.ts` — the fallback, used when Supabase is
+  unreachable or unconfigured, so the site still works either way.
+- `useRandomSpecies` — owns loading, error and retry states, times out,
+  waits for the photo to load before showing a card, keeps one animal
+  prefetched so the next press is instant, and remembers the last ten so
+  they don't repeat.
+
+Only observations can be filtered by photo licence, so both paths use that
+endpoint rather than the taxa one: the site may only show photos it is
+allowed to show, and each photographer is credited on the card.
+
+### Setting it up
+
+1. Create a project at [supabase.com](https://supabase.com).
+2. Run `supabase/schema.sql` in the SQL editor.
+3. Copy `.env.example` to `.env.local` and fill in the URL, the anon key
+   and the service role key.
+4. `npm run seed`
 
 ## How the layout works
 

@@ -5,6 +5,7 @@ import {
   fetchTaxonDetails,
   type Species,
 } from '../api/inaturalist'
+import { fetchRandomAnimal, supabaseConfigured } from '../api/supabase'
 
 /** Give up on a request that takes longer than this. Their search is slow,
  *  routinely taking several seconds, so this is deliberately generous. */
@@ -47,12 +48,16 @@ function describe(cause: unknown) {
 }
 
 /**
- * Supplies a random species from iNaturalist.
+ * Supplies a random species.
  *
- * Their search takes a few seconds, which is too long to wait after a
- * button press, so one animal is always fetched ahead of time and kept
- * ready. Pressing the button hands over the waiting one and starts loading
- * the next in the background.
+ * Normally this reads one row from our own Supabase table, which was
+ * seeded from iNaturalist and answers in milliseconds. If that fails, or
+ * the project has no Supabase credentials, it falls back to asking
+ * iNaturalist directly, which works but takes several seconds.
+ *
+ * Either way one animal is fetched ahead of time and kept ready, so
+ * pressing the button hands over the waiting one and starts loading the
+ * next in the background.
  */
 export function useRandomSpecies() {
   const [status, setStatus] = useState<RequestStatus>('idle')
@@ -64,28 +69,51 @@ export function useRandomSpecies() {
   const pending = useRef<Promise<Species | null> | null>(null)
   const requests = useRef(new Set<AbortController>())
 
+  /** The slow path: ask iNaturalist for a random sighting right now. */
+  const fetchFromInaturalist = useCallback(
+    async (signal: AbortSignal): Promise<Species> => {
+      const sighting = await fetchRandomSighting(signal, recent.current)
+
+      // The photo and the taxon details are independent, so fetch both at
+      // once rather than waiting for one and then the other.
+      const [details] = await Promise.all([
+        fetchTaxonDetails(sighting.taxonId, signal),
+        preloadImage(sighting.photo.url, signal),
+      ])
+
+      return { ...sighting, ...details }
+    },
+    [],
+  )
+
   const fetchOne = useCallback(async (): Promise<Species> => {
     const controller = new AbortController()
     requests.current.add(controller)
     const timeout = window.setTimeout(() => controller.abort(), TIMEOUT_MS)
 
     try {
-      const sighting = await fetchRandomSighting(controller.signal, recent.current)
+      let species: Species
 
-      // The photo and the taxon details are independent, so fetch both at
-      // once rather than waiting for one and then the other.
-      const [details] = await Promise.all([
-        fetchTaxonDetails(sighting.taxonId, controller.signal),
-        preloadImage(sighting.photo.url, controller.signal),
-      ])
+      if (supabaseConfigured) {
+        try {
+          species = await fetchRandomAnimal(recent.current)
+          await preloadImage(species.photo.url, controller.signal)
+        } catch (cause) {
+          console.warn('Falling back to iNaturalist:', cause)
+          species = await fetchFromInaturalist(controller.signal)
+        }
+      } else {
+        species = await fetchFromInaturalist(controller.signal)
+      }
 
-      recent.current = [sighting.taxonId, ...recent.current].slice(0, RECENT_LIMIT)
-      return { ...sighting, ...details }
+      recent.current = [species.taxonId, ...recent.current].slice(0, RECENT_LIMIT)
+      return species
     } finally {
       window.clearTimeout(timeout)
       requests.current.delete(controller)
     }
-  }, [])
+  }, [fetchFromInaturalist])
+
 
   /** Warms up the next animal in the background. */
   const prefetch = useCallback(() => {
