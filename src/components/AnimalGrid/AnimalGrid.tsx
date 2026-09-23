@@ -38,7 +38,6 @@ export function AnimalGrid({ animals }: AnimalGridProps) {
                 // The second copy is the same content again, so it is hidden
                 // from screen readers to avoid reading every animal twice.
                 aria-hidden={copy === 1 || undefined}
-                data-expanded={column.some((animal) => keyFor(animal) === expandedKey) || undefined}
               >
                 {column.map((animal) => (
                   <AnimalTile

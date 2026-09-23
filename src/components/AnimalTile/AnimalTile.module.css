@@ -105,9 +105,9 @@
   color: #f5c542;
 }
 
-/* Short tiles don't have room for everything, so keep the weird fact
+/* Small tiles don't have room for everything, so keep the weird fact
    and drop the description. */
-@container (max-height: 280px) {
+@container (max-height: 280px) or (max-width: 380px) {
   .description {
     display: none;
   }

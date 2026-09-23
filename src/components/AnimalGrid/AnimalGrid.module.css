@@ -18,13 +18,6 @@
   flex: 0 0 auto;
   flex-direction: column;
   width: calc(100vw / var(--visible-columns));
-  transition: width var(--expand-duration) var(--expand-ease);
-}
-
-/* Give the column holding the expanded tile more width, so its caption
-   has room to read. */
-.column[data-expanded] {
-  width: calc(100vw / var(--visible-columns) * 1.5);
 }
 
 /* Fewer columns fit side by side on a phone held upright. */
