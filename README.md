@@ -39,6 +39,10 @@ Animals without a photo are skipped, so the grid never shows an empty tile.
 `src/assets/animals/`, which is what the site loads. Photos that are
 already converted are skipped; pass `--force` to rebuild them all.
 
+The web-sized photos are committed; the originals are not. Every photo
+comes from Wikimedia Commons, and [CREDITS.md](CREDITS.md) lists the
+photographer and licence for each one.
+
 Keeping the originals out of the build matters here: every photo on the
 page is decoded into memory at once, so full-size files make the page slow
 to load and heavy to render.
