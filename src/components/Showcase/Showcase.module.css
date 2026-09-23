@@ -53,24 +53,61 @@
   opacity: 0.75;
 }
 
-.description {
-  margin: 1rem 0 0;
+.summary {
+  margin: 0.9rem 0 0;
   line-height: 1.5;
 }
 
-.fact {
-  margin: 1rem 0 0;
-  line-height: 1.5;
-}
-
-.factLabel {
-  display: block;
-  margin-bottom: 0.2rem;
+/* Which group the animal belongs to, plus its conservation status. */
+.group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin: 0 0 0.35rem;
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #f5c542;
+}
+
+.status {
+  padding: 0.15rem 0.5rem;
+  font-size: 0.65rem;
+  color: #fff;
+  background: rgb(255 255 255 / 0.15);
+  border-radius: 999px;
+}
+
+.meta {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin: 0.9rem 0 0;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.link {
+  color: #f5c542;
+}
+
+.credit {
+  margin: 0.6rem 0 0;
+  font-size: 0.75rem;
+  opacity: 0.55;
+}
+
+/* Shown while the shuffle runs and the request is in flight. */
+.searching {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.message {
+  padding: 2rem 1.5rem;
+  color: #fff;
 }
 
 .actions {
@@ -79,8 +116,8 @@
   margin-top: 1.5rem;
 }
 
-.again,
-.close {
+.primary,
+.secondary {
   padding: 0.6rem 1.2rem;
   font: inherit;
   font-weight: 600;
@@ -92,13 +129,13 @@
   transition: filter 0.2s ease;
 }
 
-.close {
+.secondary {
   color: #fff;
   background: rgb(255 255 255 / 0.12);
 }
 
-.again:hover,
-.close:hover {
+.primary:hover,
+.secondary:hover {
   filter: brightness(1.15);
 }
 
