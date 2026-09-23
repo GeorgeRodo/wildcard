@@ -24,7 +24,13 @@ export function AnimalTile({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <img className={styles.image} src={animal.image} alt={animal.name} />
+      <img
+        className={styles.image}
+        src={animal.image}
+        alt={animal.name}
+        loading="lazy"
+        decoding="async"
+      />
       <figcaption className={styles.info}>
         <h2 className={styles.name}>{animal.name}</h2>
         <p className={styles.scientificName}>{animal.scientificName}</p>
