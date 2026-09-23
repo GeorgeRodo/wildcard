@@ -392,4 +392,100 @@ export const animals: Animal[] = [
       'A big cat of the high mountains of Central Asia, rarely seen, with fur so thick it covers the soles of its paws.',
     fact: 'It can’t roar, and its metre-long tail doubles as balance on cliffs and as a scarf when it sleeps.',
   },
+  {
+    id: 'zebra',
+    name: 'Plains zebra',
+    scientificName: 'Equus quagga',
+    description:
+      'The most common zebra, living in family groups across eastern and southern Africa. No two are striped alike.',
+    fact: 'The stripes seem to be insect repellent: biting flies approach striped hides as often as plain ones, but fail to land on them.',
+  },
+  {
+    id: 'hippopotamus',
+    name: 'Hippopotamus',
+    scientificName: 'Hippopotamus amphibius',
+    description:
+      'Spends its days in rivers and lakes and comes out at night to graze. Despite its bulk it can outrun a person over short distances.',
+    fact: 'It sweats a reddish oil that works as both sunscreen and antiseptic, which is why hippos look like they are bleeding.',
+  },
+  {
+    id: 'jaguar',
+    name: 'Jaguar',
+    scientificName: 'Panthera onca',
+    description:
+      'The biggest cat in the Americas, and an unusually strong swimmer that hunts caimans and turtles in the water.',
+    fact: 'It kills by biting straight through the skull, and its bite is the strongest of any big cat for its size.',
+  },
+  {
+    id: 'humpback-whale',
+    name: 'Humpback whale',
+    scientificName: 'Megaptera novaeangliae',
+    description:
+      'Migrates up to 8,000 km between feeding and breeding grounds, and herds fish by blowing curtains of bubbles.',
+    fact: 'Males sing long, structured songs that keep changing, and the new version spreads across a whole ocean population.',
+  },
+  {
+    id: 'manatee',
+    name: 'West Indian manatee',
+    scientificName: 'Trichechus manatus',
+    description:
+      'A slow, wholly vegetarian sea mammal that grazes seagrass in warm shallow water and must surface to breathe.',
+    fact: 'Its closest living relatives are elephants, and like them it replaces its worn teeth throughout its life.',
+  },
+  {
+    id: 'orca',
+    name: 'Orca',
+    scientificName: 'Orcinus orca',
+    description:
+      'The largest dolphin, hunting in family groups led by the oldest female, with techniques passed down the generations.',
+    fact: 'Each pod has its own dialect of calls, different enough that researchers can tell pods apart by sound alone.',
+  },
+  {
+    id: 'giant-anteater',
+    name: 'Giant anteater',
+    scientificName: 'Myrmecophaga tridactyla',
+    description:
+      'Walks on its knuckles to keep its digging claws sharp, and sleeps curled under its own bushy tail.',
+    fact: 'It has no teeth at all. Its 60 cm tongue flicks in and out about 150 times a minute to gather ants.',
+  },
+  {
+    id: 'armadillo',
+    name: 'Nine-banded armadillo',
+    scientificName: 'Dasypus novemcinctus',
+    description:
+      'Armoured in bony plates, it can cross a river either by floating, having gulped air, or by walking along the bottom.',
+    fact: 'It nearly always gives birth to four identical young, all from a single egg.',
+  },
+  {
+    id: 'ostrich',
+    name: 'Ostrich',
+    scientificName: 'Struthio camelus',
+    description:
+      'The largest and fastest bird on land, running at 70 km/h on two toes and kicking hard enough to injure a lion.',
+    fact: 'Each eye is about 5 cm across and weighs more than its brain.',
+  },
+  {
+    id: 'ring-tailed-lemur',
+    name: 'Ring-tailed lemur',
+    scientificName: 'Lemur catta',
+    description:
+      'The most ground-dwelling lemur, found only in Madagascar, and fond of sunbathing upright with its arms out.',
+    fact: 'Males hold “stink fights”: they rub scent onto their tails and waft it at each other until one backs down.',
+  },
+  {
+    id: 'hedgehog',
+    name: 'European hedgehog',
+    scientificName: 'Erinaceus europaeus',
+    description:
+      'Carries about 5,000 spines, rolls into a ball when threatened and sleeps through the winter.',
+    fact: 'Meeting a strong new smell, it chews until it froths and then spreads the foam over its own spines. Nobody is sure why.',
+  },
+  {
+    id: 'dung-beetle',
+    name: 'Dung beetle',
+    scientificName: 'Deltochilum mexicanum',
+    description:
+      'Rolls balls of dung away from the pile to bury as food, burying more of it than any other group of insects.',
+    fact: 'It keeps to a straight line by reading the sky, and one African species steers by the Milky Way.',
+  },
 ]
