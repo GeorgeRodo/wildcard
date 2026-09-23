@@ -1,4 +1,4 @@
-# Gambling Nature
+# Wildcard
 
 A full-screen wall of wild animal photos. Rest the mouse on a photo for a
 second and it expands to show the animal's scientific name, a short
