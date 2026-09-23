@@ -1,8 +1,4 @@
 .button {
-  position: fixed;
-  z-index: 5;
-  bottom: 2rem;
-  left: 50%;
   padding: 0.85rem 1.75rem;
   font: inherit;
   font-size: 1rem;
@@ -13,7 +9,8 @@
   border-radius: 999px;
   box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 0.45);
   cursor: pointer;
-  transform: translateX(-50%);
+  /* The hero wrapper drops pointer events, so the button claims its own. */
+  pointer-events: auto;
   transition:
     transform var(--expand-duration) var(--expand-ease),
     filter var(--expand-duration) var(--expand-ease);
@@ -22,9 +19,9 @@
 .button:hover,
 .button:focus-visible {
   filter: brightness(1.1);
-  transform: translateX(-50%) translateY(-2px);
+  transform: translateY(-2px);
 }
 
 .button:active {
-  transform: translateX(-50%) translateY(1px);
+  transform: translateY(1px);
 }

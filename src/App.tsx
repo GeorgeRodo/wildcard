@@ -1,6 +1,6 @@
 import { AnimalGrid } from './components/AnimalGrid'
 import { AnimalShowcase } from './components/AnimalShowcase'
-import { ShuffleButton } from './components/ShuffleButton'
+import { Hero } from './components/Hero'
 import { gallery } from './data/gallery'
 import { useShuffle } from './hooks/useShuffle'
 
@@ -9,9 +9,8 @@ function App() {
 
   return (
     <main>
-      <h1 className="visually-hidden">Wildcard</h1>
       <AnimalGrid animals={gallery} paused={status !== 'idle'} />
-      <ShuffleButton onClick={start} />
+      <Hero onShuffle={start} />
       <AnimalShowcase
         animal={current}
         status={status}
