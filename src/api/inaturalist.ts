@@ -3,9 +3,9 @@
  *
  * Random species come from the observations endpoint rather than the taxa
  * one, because only observations can be filtered by photo licence, and we
- * can only show photos we are allowed to show. Ordering by votes keeps the
- * results to photos the community has picked out, which are far better
- * than an arbitrary sighting.
+ * can only show photos we are allowed to show. `popular=true` limits the
+ * results to sightings the community has faved, which are far better than
+ * an arbitrary one, and it searches much faster than sorting by votes.
  */
 
 const API = 'https://api.inaturalist.org/v1'
@@ -108,7 +108,17 @@ interface TaxonResponse {
   }[]
 }
 
-async function fetchTaxonDetails(taxonId: number, signal: AbortSignal) {
+export interface TaxonDetails {
+  summary: string
+  conservationStatus: string | null
+  observationCount: number | null
+}
+
+/** Wikipedia summary, conservation status and sighting count for a taxon. */
+export async function fetchTaxonDetails(
+  taxonId: number,
+  signal: AbortSignal,
+): Promise<TaxonDetails> {
   const cached = taxonCache.get(taxonId)
   if (cached) return cached
 
@@ -125,22 +135,25 @@ async function fetchTaxonDetails(taxonId: number, signal: AbortSignal) {
   return details
 }
 
+/** What one observation tells us, before the taxon is looked up. */
+export type Sighting = Omit<Species, keyof TaxonDetails>
+
 /**
  * Picks one random animal from the most-liked observations on iNaturalist.
  * `exclude` holds recently shown taxon ids, so the same animal doesn't come
  * up twice in a row.
  */
-export async function fetchRandomSpecies(
+export async function fetchRandomSighting(
   signal: AbortSignal,
   exclude: number[] = [],
-): Promise<Species> {
+): Promise<Sighting> {
   const params = new URLSearchParams({
     quality_grade: 'research',
     rank: 'species',
     photos: 'true',
     photo_license: LICENCES,
     iconic_taxa: ICONIC_TAXA,
-    order_by: 'votes',
+    popular: 'true',
     per_page: String(PAGE_SIZE),
     page: String(1 + Math.floor(Math.random() * MAX_PAGE)),
   })
@@ -161,16 +174,12 @@ export async function fetchRandomSpecies(
   const observation = usable[Math.floor(Math.random() * usable.length)]
   const taxon = observation.taxon!
   const photo = observation.photos![0]
-  const details = await fetchTaxonDetails(taxon.id!, signal)
 
   return {
     taxonId: taxon.id!,
     name: taxon.preferred_common_name ?? taxon.name!,
     scientificName: taxon.name!,
     group: taxon.iconic_taxon_name ?? 'Animal',
-    summary: details.summary,
-    conservationStatus: details.conservationStatus,
-    observationCount: details.observationCount,
     photo: {
       url: largePhoto(photo.url!),
       attribution: photo.attribution ?? 'iNaturalist',
