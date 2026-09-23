@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { AnimalGrid } from './components/AnimalGrid'
 import { Hero } from './components/Hero'
 import { Showcase, type ShowcasePhase } from './components/Showcase'
@@ -7,9 +8,16 @@ import { useShuffle } from './hooks/useShuffle'
 
 function App() {
   // The shuffle is the local flicker through the wall; the species comes
-  // from iNaturalist. The animation covers the wait for the request.
+  // from iNaturalist. The shuffle runs until the request has finished.
   const shuffle = useShuffle(gallery)
   const species = useRandomSpecies()
+
+  const { settle } = shuffle
+  const requestStatus = species.status
+
+  useEffect(() => {
+    if (requestStatus === 'success' || requestStatus === 'error') settle()
+  }, [requestStatus, settle])
 
   const open = shuffle.status !== 'idle'
 
@@ -24,10 +32,10 @@ function App() {
   }
 
   const phase: ShowcasePhase =
-    species.status === 'error'
-      ? 'error'
-      : shuffle.status === 'shuffling'
-        ? 'shuffling'
+    shuffle.status === 'shuffling'
+      ? 'shuffling'
+      : species.status === 'error'
+        ? 'error'
         : species.status === 'success'
           ? 'ready'
           : 'loading'
