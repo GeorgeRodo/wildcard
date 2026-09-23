@@ -12,14 +12,38 @@
   pointer-events: none;
 }
 
+/* A scrim: photos are unpredictable, so no amount of text shadow can
+   guarantee contrast. This darkens and blurs whatever ends up behind the
+   title, and fades out at the edges so it doesn't read as a box. */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 55% 42% at 50% 50%,
+    rgb(0 0 0 / 0.72),
+    rgb(0 0 0 / 0.45) 55%,
+    rgb(0 0 0 / 0) 78%
+  );
+  backdrop-filter: blur(7px);
+  -webkit-mask-image: radial-gradient(ellipse 55% 42% at 50% 50%, #000 40%, transparent 78%);
+  mask-image: radial-gradient(ellipse 55% 42% at 50% 50%, #000 40%, transparent 78%);
+  pointer-events: none;
+}
+
+/* The scrim is positioned, so it would otherwise paint over the content. */
+.hero > button {
+  position: relative;
+}
+
 .title {
+  position: relative;
   margin: 0;
   font-size: clamp(2.5rem, 9vw, 7rem);
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.03em;
   color: #fff;
-  text-shadow:
-    0 0.15em 0.6em rgb(0 0 0 / 0.75),
-    0 0 1.5em rgb(0 0 0 / 0.5);
+  /* Backs up the scrim on the brightest photos. */
+  text-shadow: 0 0.08em 0.35em rgb(0 0 0 / 0.55);
 }
