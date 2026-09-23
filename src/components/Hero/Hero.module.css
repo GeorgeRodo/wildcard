@@ -20,14 +20,14 @@
   position: absolute;
   inset: 0;
   background: radial-gradient(
-    ellipse 55% 42% at 50% 50%,
-    rgb(0 0 0 / 0.72),
+    ellipse 34% 24% at 50% 50%,
+    rgb(0 0 0 / 0.75),
     rgb(0 0 0 / 0.45) 55%,
-    rgb(0 0 0 / 0) 78%
+    rgb(0 0 0 / 0) 80%
   );
   backdrop-filter: blur(7px);
-  -webkit-mask-image: radial-gradient(ellipse 55% 42% at 50% 50%, #000 40%, transparent 78%);
-  mask-image: radial-gradient(ellipse 55% 42% at 50% 50%, #000 40%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 34% 24% at 50% 50%, #000 40%, transparent 80%);
+  mask-image: radial-gradient(ellipse 34% 24% at 50% 50%, #000 40%, transparent 80%);
   pointer-events: none;
 }
 
