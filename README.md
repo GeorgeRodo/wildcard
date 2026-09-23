@@ -1,8 +1,13 @@
 # Wildcard
 
-A full-screen wall of wild animal photos. Rest the mouse on a photo for a
-second and it expands to show the animal's scientific name, a short
-description and a weird fact.
+A full-screen wall of wild animal photos. Rest the mouse on a photo and it
+expands to show the animal's scientific name, a short description and a
+weird fact.
+
+Press **Pick an animal** and the wall shuffles like a slot machine, then
+lands on a real species pulled live from the
+[iNaturalist API](https://api.inaturalist.org/v1/docs/): its photo,
+taxonomy, conservation status, sighting count and a summary.
 
 Built with React, TypeScript and Vite.
 
@@ -46,6 +51,18 @@ photographer and licence for each one.
 Keeping the originals out of the build matters here: every photo on the
 page is decoded into memory at once, so full-size files make the page slow
 to load and heavy to render.
+
+## Live data
+
+The shuffle calls iNaturalist's observations endpoint rather than its taxa
+endpoint, because only observations can be filtered by photo licence, and
+the site may only show photos it is allowed to show. Results are ordered by
+community votes, so the photos are ones people have picked out.
+
+`src/api/inaturalist.ts` handles the request and maps the response;
+`useRandomSpecies` owns the loading, error and retry states, cancels a
+request that is replaced, times out after 10 seconds, caches taxon details
+for the session and remembers the last ten animals so they don't repeat.
 
 ## How the layout works
 

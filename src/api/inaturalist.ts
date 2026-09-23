@@ -48,11 +48,25 @@ export class ApiError extends Error {}
 /** iNaturalist serves several sizes from one URL. */
 const largePhoto = (url: string) => url.replace(/\/(square|small|medium)\./, '/large.')
 
-const stripHtml = (html: string) =>
-  html
+/** Longest summary to show before trimming to the last full sentence. */
+const SUMMARY_LIMIT = 360
+
+function cleanSummary(html: string) {
+  const text = html
     .replace(/<[^>]+>/g, '')
+    // Wikipedia leaves pronunciation asides like "(help·info)" behind.
+    .replace(/\(\s*help\s*[·.]\s*info\s*\)/gi, '')
+    .replace(/\(\s*\)/g, '')
+    .replace(/\s+([;,.])/g, '$1')
     .replace(/\s+/g, ' ')
     .trim()
+
+  if (text.length <= SUMMARY_LIMIT) return text
+
+  const cut = text.slice(0, SUMMARY_LIMIT)
+  const lastSentence = cut.lastIndexOf('. ')
+  return lastSentence > 120 ? cut.slice(0, lastSentence + 1) : `${cut.trimEnd()}…`
+}
 
 /** Taxon details rarely change, so keep them for the session. */
 const taxonCache = new Map<number, { summary: string; conservationStatus: string | null; observationCount: number | null }>()
@@ -102,7 +116,7 @@ async function fetchTaxonDetails(taxonId: number, signal: AbortSignal) {
   const taxon = data.results?.[0]
 
   const details = {
-    summary: taxon?.wikipedia_summary ? stripHtml(taxon.wikipedia_summary) : '',
+    summary: taxon?.wikipedia_summary ? cleanSummary(taxon.wikipedia_summary) : '',
     conservationStatus: taxon?.conservation_status?.status_name ?? null,
     observationCount: taxon?.observations_count ?? null,
   }
