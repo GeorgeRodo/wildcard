@@ -45,10 +45,15 @@ to load and heavy to render.
 
 ## How the layout works
 
-The screen is split evenly between all photos. `splitIntoRows` uses
-`floor(√n)` rows and spreads the photos across them so row lengths differ
-by at most one, e.g. 4 photos → 2 × 2, 5 → 3 + 2. On portrait screens the
-rows turn into columns.
+The wall is always four rows tall. Animals are grouped into columns of
+four, six columns fit across the screen, and the whole strip drifts
+slowly to the left so every animal comes round in turn. The track holds
+two copies of the columns: once the first copy has scrolled past, the
+offset jumps back by one copy's width, which lands on the matching column
+and looks seamless.
+
+Scrolling pauses while a photo is expanded. On portrait screens two
+columns fit across instead of six.
 
 ## Project structure
 
@@ -61,9 +66,10 @@ src/
 │   ├── animals.ts     # names, descriptions and facts
 │   └── gallery.ts     # matches each animal to its photo
 ├── hooks/
-│   └── useHoverIntent.ts
+│   ├── useHoverIntent.ts   # waits until the pointer rests on a photo
+│   └── useMarquee.ts       # scrolls the wall left, frame by frame
 ├── utils/
-│   └── splitIntoRows.ts
+│   └── chunk.ts
 └── styles/
     └── global.css
 ```
