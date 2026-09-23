@@ -1,0 +1,109 @@
+.backdrop {
+  position: fixed;
+  z-index: 10;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  background: rgb(0 0 0 / 0.72);
+  backdrop-filter: blur(6px);
+  animation: fade 0.25s var(--expand-ease);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  width: min(46rem, 100%);
+  max-height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #16181a;
+  border-radius: 0.75rem;
+  box-shadow: 0 1.5rem 4rem rgb(0 0 0 / 0.6);
+  /* Sits slightly small while the shuffle is running, then settles. */
+  transform: scale(0.96);
+  transition: transform 0.35s var(--expand-ease);
+}
+
+.card[data-settled] {
+  transform: scale(1);
+}
+
+.image {
+  width: 100%;
+  height: min(24rem, 45vh);
+  object-fit: cover;
+}
+
+.info {
+  padding: 1.25rem 1.5rem 1.5rem;
+  overflow-y: auto;
+  color: #fff;
+}
+
+.name {
+  margin: 0;
+  font-size: 1.6rem;
+  line-height: 1.15;
+}
+
+.scientificName {
+  margin: 0.2rem 0 0;
+  font-style: italic;
+  opacity: 0.75;
+}
+
+.description {
+  margin: 1rem 0 0;
+  line-height: 1.5;
+}
+
+.fact {
+  margin: 1rem 0 0;
+  line-height: 1.5;
+}
+
+.factLabel {
+  display: block;
+  margin-bottom: 0.2rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #f5c542;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.again,
+.close {
+  padding: 0.6rem 1.2rem;
+  font: inherit;
+  font-weight: 600;
+  color: #16181a;
+  background: #f5c542;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: filter 0.2s ease;
+}
+
+.close {
+  color: #fff;
+  background: rgb(255 255 255 / 0.12);
+}
+
+.again:hover,
+.close:hover {
+  filter: brightness(1.15);
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}

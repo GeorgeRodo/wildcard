@@ -16,13 +16,15 @@ const SCROLL_SPEED = 20
 
 interface AnimalGridProps {
   animals: GalleryItem[]
+  /** Holds the wall still, e.g. while the showcase is open. */
+  paused?: boolean
 }
 
-export function AnimalGrid({ animals }: AnimalGridProps) {
+export function AnimalGrid({ animals, paused = false }: AnimalGridProps) {
   const columns = chunk(animals, ROWS)
   const { active: expandedKey, enter, leave } = useHoverIntent<string>(HOVER_DELAY_MS)
   // Two copies of the columns, so the wall can loop without a visible seam.
-  const trackRef = useMarquee<HTMLDivElement>(SCROLL_SPEED, expandedKey !== null)
+  const trackRef = useMarquee<HTMLDivElement>(SCROLL_SPEED, paused || expandedKey !== null)
 
   return (
     <div className={styles.viewport}>
