@@ -6,11 +6,18 @@
   margin: 0;
   overflow: hidden;
   container-type: size;
-  transition: flex-grow var(--expand-duration) var(--expand-ease);
+  transition:
+    transform var(--expand-duration) var(--expand-ease),
+    box-shadow var(--expand-duration) var(--expand-ease);
 }
 
+/* The expanded tile scales up over its neighbours rather than pushing
+   them aside, so nothing else in the wall moves. Scaling also runs on the
+   GPU, which keeps it smooth while the wall is scrolling. */
 .tile[data-expanded] {
-  flex-grow: 1.7;
+  z-index: 2;
+  transform: scale(1.35);
+  box-shadow: 0 0.75rem 2rem rgb(0 0 0 / 0.55);
 }
 
 .image {
