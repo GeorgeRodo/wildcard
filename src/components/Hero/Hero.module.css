@@ -31,13 +31,31 @@
   pointer-events: none;
 }
 
-/* The scrim is positioned, so it would otherwise paint over the content. */
+/* Photos under the scrim shouldn't expand on hover: they are dimmed and
+   half behind the title, so it looks like a glitch. This invisible ellipse
+   covers the scrim's dark core and swallows the pointer. */
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60%;
+  height: 42%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+}
+
+/* The scrim and its hit-area are positioned, so the content needs to sit
+   above them to stay visible and clickable. */
 .hero > button {
   position: relative;
+  z-index: 1;
 }
 
 .title {
   position: relative;
+  z-index: 1;
   margin: 0;
   font-size: clamp(2.5rem, 9vw, 7rem);
   font-weight: 700;
