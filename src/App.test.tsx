@@ -124,6 +124,28 @@ describe('App', () => {
     expect(second).toHaveAttribute('data-expanded')
   })
 
+  it('stops the wall moving with the pause button, and starts it again', async () => {
+    localStorage.clear()
+    render(<App />)
+    const track = screen.getAllByRole('figure')[0].parentElement!.parentElement!
+    const offset = () => Number(/translate3d\((-?[\d.e-]+)px/.exec(track.style.transform)?.[1] ?? 0)
+    const pause = screen.getByRole('button', { name: 'Pause the wall' })
+
+    await wait(1000)
+    expect(offset()).toBeLessThan(0)
+
+    fireEvent.click(pause)
+    expect(pause).toHaveAttribute('aria-pressed', 'true')
+    const stoppedAt = offset()
+    await wait(2000)
+    expect(offset()).toBe(stoppedAt)
+
+    fireEvent.click(pause)
+    expect(pause).toHaveAttribute('aria-pressed', 'false')
+    await wait(1000)
+    expect(offset()).toBeLessThan(stoppedAt)
+  })
+
   it('closes the card and hands focus back to the button', async () => {
     render(<App />)
     await wait(3000)

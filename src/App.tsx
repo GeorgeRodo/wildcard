@@ -10,6 +10,7 @@ import { useRandomSpecies } from './hooks/useRandomSpecies'
 import { useShuffle } from './hooks/useShuffle'
 import type { Rect } from './utils/rects'
 import { useSoundEnabled } from './hooks/useSoundEnabled'
+import { useStoredBoolean } from './hooks/useStoredBoolean'
 
 function App() {
   // The shuffle is the local flicker through the wall; the species comes
@@ -17,6 +18,7 @@ function App() {
   const shuffle = useShuffle(gallery, playTick)
   const species = useRandomSpecies()
   const [soundOn, setSoundOn] = useSoundEnabled()
+  const [wallPaused, setWallPaused] = useStoredBoolean('wildcard:wall-paused', false)
   const [creditsOpen, setCreditsOpen] = useState(false)
   const [openPhotoArea, setOpenPhotoArea] = useState<Rect | null>(null)
 
@@ -53,13 +55,15 @@ function App() {
     <main>
       <AnimalGrid
         animals={gallery}
-        paused={open || creditsOpen}
+        paused={open || creditsOpen || wallPaused}
         onOpenAreaChange={setOpenPhotoArea}
       />
       <Hero onShuffle={start} obstruction={openPhotoArea} />
       <Toolbar
         soundOn={soundOn}
         onToggleSound={() => setSoundOn((on) => !on)}
+        wallPaused={wallPaused}
+        onToggleWall={() => setWallPaused((paused) => !paused)}
         onOpenCredits={() => setCreditsOpen(true)}
       />
       {open && (
