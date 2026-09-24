@@ -8,7 +8,7 @@ A full-screen wall of wild animal photos that drifts slowly sideways. Rest
 the mouse on a photo and it grows to show the animal's scientific name and
 a weird fact.
 
-Press **Pick an animal** and a card shuffles through the wall like a slot
+Press **Spin the wild** and a card shuffles through the wall like a slot
 machine, then lands on one of 2,600 real species: its photo, taxonomy,
 conservation status, sighting count and a summary. The species come from
 [iNaturalist](https://www.inaturalist.org), stored in a Supabase database.

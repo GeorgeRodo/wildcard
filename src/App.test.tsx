@@ -53,7 +53,7 @@ describe('App', () => {
     render(<App />)
     await wait(3000)
 
-    fireEvent.click(screen.getByRole('button', { name: 'Pick an animal' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Spin the wild' }))
     expect(screen.getByRole('dialog', { name: 'Random animal' })).toBeInTheDocument()
     expect(shuffleAgainButton()).not.toBeInTheDocument()
 
@@ -70,7 +70,7 @@ describe('App', () => {
     render(<App />)
     await wait(3000)
 
-    fireEvent.click(screen.getByRole('button', { name: 'Pick an animal' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Spin the wild' }))
     await wait(3000)
     const first = screen.getByRole('heading', { name: /^Test animal/ }).textContent
 
@@ -90,7 +90,7 @@ describe('App', () => {
     render(<App />)
     await wait(3000)
 
-    const pick = screen.getByRole('button', { name: 'Pick an animal' })
+    const pick = screen.getByRole('button', { name: 'Spin the wild' })
     pick.focus()
     fireEvent.click(pick)
     await wait(3000)

@@ -7,7 +7,7 @@ interface ShuffleButtonProps {
 export function ShuffleButton({ onClick }: ShuffleButtonProps) {
   return (
     <button type="button" className={styles.button} onClick={onClick}>
-      Pick an animal
+      Spin the wild
     </button>
   )
 }
