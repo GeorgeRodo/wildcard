@@ -8,24 +8,42 @@
   /* Lets the pointer through to the photos underneath; the button turns
      this back on for itself. */
   pointer-events: none;
-  /* Coming back: unhurried, and only once the photo has started shrinking
-     back out of the way. */
-  transition: opacity 0.45s var(--expand-ease) 0.1s;
 }
 
-/* An open photo that would cover the title would otherwise sit behind it.
-   Going: quick, so it is gone before the photo reaches it. Hidden, the
-   hero must not catch the pointer either, or it would steal it from the
-   open photo and close it. */
-.hero[data-faded] {
-  opacity: 0;
-  transition: opacity 0.15s ease;
-}
-
+/* Hidden while an open photo would cover the title. The hero itself never
+   fades: a blurred backdrop can't show through a parent that is partly
+   transparent, so the blur would vanish for the whole fade and then snap
+   back at the end. Instead the blurred layers (the scrim, and the panel on
+   phones) fade themselves, which blurs smoothly all the way. */
 .hero[data-faded],
 .hero[data-faded]::after,
 .hero[data-faded] * {
+  /* Hidden, it mustn't catch the pointer either, or it would steal it from
+     the open photo and close it. */
   pointer-events: none;
+}
+
+.content,
+.hero::before {
+  /* Coming back: unhurried, and only once the photo has started shrinking
+     back out of the way. */
+  transition:
+    opacity 0.45s var(--expand-ease) 0.1s,
+    transform 0.45s var(--expand-ease) 0.1s;
+}
+
+/* Going: quick, so it's gone before the photo reaches it, with a slight
+   sink so that coming back reads as a gentle rise. */
+.hero[data-faded] .content,
+.hero[data-faded]::before {
+  opacity: 0;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+}
+
+.hero[data-faded] .content {
+  transform: translateY(0.4rem) scale(0.97);
 }
 
 .content {
@@ -35,13 +53,6 @@
   flex-direction: column;
   gap: 1.5rem;
   align-items: center;
-  transition: transform 0.45s var(--expand-ease) 0.1s;
-}
-
-/* A slight sink on the way out, so coming back reads as a gentle rise. */
-.hero[data-faded] .content {
-  transform: translateY(0.4rem) scale(0.97);
-  transition: transform 0.15s ease;
 }
 
 /* A scrim: photos are unpredictable, so no amount of text shadow can
