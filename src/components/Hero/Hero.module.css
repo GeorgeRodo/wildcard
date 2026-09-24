@@ -1,3 +1,12 @@
+/* How strongly the desktop scrim darkens and blurs, from 0 to 1. Registered
+   as a number so that it can be animated: the gradient and the blur are
+   both worked out from it on every frame. */
+@property --scrim {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 1;
+}
+
 .hero {
   position: fixed;
   z-index: 5;
@@ -10,40 +19,35 @@
   pointer-events: none;
 }
 
-/* Hidden while an open photo would cover the title. The hero itself never
-   fades: a blurred backdrop can't show through a parent that is partly
-   transparent, so the blur would vanish for the whole fade and then snap
-   back at the end. Instead the blurred layers (the scrim, and the panel on
-   phones) fade themselves, which blurs smoothly all the way. */
+/* Hidden while an open photo would cover the title. Hidden, it mustn't
+   catch the pointer either, or it would steal it from the open photo and
+   close it. */
 .hero[data-faded],
 .hero[data-faded]::after,
 .hero[data-faded] * {
-  /* Hidden, it mustn't catch the pointer either, or it would steal it from
-     the open photo and close it. */
   pointer-events: none;
 }
 
-.content,
-.hero::before {
-  /* Coming back: unhurried, and only once the photo has started shrinking
-     back out of the way. */
-  transition:
-    opacity 0.45s var(--expand-ease) 0.1s,
-    transform 0.45s var(--expand-ease) 0.1s;
+/*
+ * How it hides. Nothing with a blur behind it ever changes its opacity:
+ * browsers drop a backdrop blur while its layer is partly transparent, so
+ * the blur would vanish for the whole fade and snap back at the end.
+ * Instead the blurred layers turn their blur and darkness down to nothing,
+ * and only the text and button, which have no blur, fade out.
+ *
+ * Coming back is unhurried and waits a moment for the photo to start
+ * shrinking away. Going is quick, so it's gone before the photo arrives,
+ * with a slight sink so that coming back reads as a gentle rise.
+ */
+.title,
+.action {
+  transition: opacity 0.45s var(--expand-ease) 0.1s;
 }
 
-/* Going: quick, so it's gone before the photo reaches it, with a slight
-   sink so that coming back reads as a gentle rise. */
-.hero[data-faded] .content,
-.hero[data-faded]::before {
+.hero[data-faded] .title,
+.hero[data-faded] .action {
   opacity: 0;
-  transition:
-    opacity 0.15s ease,
-    transform 0.15s ease;
-}
-
-.hero[data-faded] .content {
-  transform: translateY(0.4rem) scale(0.97);
+  transition: opacity 0.15s ease;
 }
 
 .content {
@@ -53,6 +57,22 @@
   flex-direction: column;
   gap: 1.5rem;
   align-items: center;
+  transition:
+    transform 0.45s var(--expand-ease) 0.1s,
+    background-color 0.45s var(--expand-ease) 0.1s,
+    border-color 0.45s var(--expand-ease) 0.1s,
+    box-shadow 0.45s var(--expand-ease) 0.1s,
+    backdrop-filter 0.45s var(--expand-ease) 0.1s;
+}
+
+.hero[data-faded] .content {
+  transform: translateY(0.4rem) scale(0.97);
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    backdrop-filter 0.15s ease;
 }
 
 /* A scrim: photos are unpredictable, so no amount of text shadow can
@@ -64,14 +84,20 @@
   inset: 0;
   background: radial-gradient(
     ellipse 34% 24% at 50% 50%,
-    rgb(0 0 0 / 0.75),
-    rgb(0 0 0 / 0.45) 55%,
+    rgb(0 0 0 / calc(0.75 * var(--scrim))),
+    rgb(0 0 0 / calc(0.45 * var(--scrim))) 55%,
     rgb(0 0 0 / 0) 80%
   );
-  backdrop-filter: blur(7px);
+  backdrop-filter: blur(calc(7px * var(--scrim)));
   -webkit-mask-image: radial-gradient(ellipse 34% 24% at 50% 50%, #000 40%, transparent 80%);
   mask-image: radial-gradient(ellipse 34% 24% at 50% 50%, #000 40%, transparent 80%);
   pointer-events: none;
+  transition: --scrim 0.45s var(--expand-ease) 0.1s;
+}
+
+.hero[data-faded]::before {
+  --scrim: 0;
+  transition: --scrim 0.15s ease;
 }
 
 /* Photos under the scrim shouldn't expand on hover: they are dimmed and
@@ -113,12 +139,20 @@
   .content {
     gap: 1rem;
     padding: 1.5rem 2rem;
-    background: rgb(0 0 0 / 0.55);
+    background-color: rgb(0 0 0 / 0.55);
     border: 1px solid rgb(255 255 255 / 0.12);
     border-radius: 1.25rem;
     box-shadow: 0 1rem 2.5rem rgb(0 0 0 / 0.45);
     backdrop-filter: blur(12px);
     pointer-events: auto;
+  }
+
+  /* The panel empties rather than fades: see "How it hides" above. */
+  .hero[data-faded] .content {
+    background-color: rgb(0 0 0 / 0);
+    border-color: rgb(255 255 255 / 0);
+    box-shadow: 0 1rem 2.5rem rgb(0 0 0 / 0);
+    backdrop-filter: blur(0);
   }
 
   .title {

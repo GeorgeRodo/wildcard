@@ -28,7 +28,10 @@ export function Hero({ onShuffle, obstruction = null }: HeroProps) {
     <div className={styles.hero} data-faded={faded || undefined}>
       <div ref={content} className={styles.content}>
         <h1 className={styles.title}>Wildcard</h1>
-        <ShuffleButton onClick={onShuffle} />
+        {/* Fades the button without overriding its own hover animation. */}
+        <div className={styles.action}>
+          <ShuffleButton onClick={onShuffle} />
+        </div>
       </div>
     </div>
   )
