@@ -112,7 +112,7 @@ build.
 - **Components:** the `Modal`'s focus handling, Tab trapping, Escape, and
   stacked dialogs.
 - **The app:** a full shuffle against a mocked database, plus a regression
-  test for a real bug where "Shuffle again" never stopped. With the old
+  test for a real bug where "Spin again" never stopped. With the old
   code put back, that test fails.
 
 ## Mobile

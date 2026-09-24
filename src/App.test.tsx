@@ -37,7 +37,7 @@ const wait = (ms: number) =>
     await vi.advanceTimersByTimeAsync(ms)
   })
 
-const shuffleAgainButton = () => screen.queryByRole('button', { name: 'Shuffle again' })
+const spinAgainButton = () => screen.queryByRole('button', { name: 'Spin again' })
 
 describe('App', () => {
   beforeEach(() => {
@@ -55,18 +55,18 @@ describe('App', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Spin the wild' }))
     expect(screen.getByRole('dialog', { name: 'Random animal' })).toBeInTheDocument()
-    expect(shuffleAgainButton()).not.toBeInTheDocument()
+    expect(spinAgainButton()).not.toBeInTheDocument()
 
     await wait(3000)
 
     expect(screen.getByRole('heading', { name: /^Test animal/ })).toBeInTheDocument()
-    expect(shuffleAgainButton()).toBeInTheDocument()
+    expect(spinAgainButton()).toBeInTheDocument()
   })
 
   // Regression: the shuffle used to stop when the request's status changed.
-  // "Shuffle again" with an animal already prefetched goes from success to
+  // "Spin again" with an animal already prefetched goes from success to
   // success, which is no change, so the shuffle never stopped.
-  it('settles again after "Shuffle again" when the next animal is already waiting', async () => {
+  it('settles again after "Spin again" when the next animal is already waiting', async () => {
     render(<App />)
     await wait(3000)
 
@@ -77,12 +77,12 @@ describe('App', () => {
     // Give the background prefetch time to have the next animal ready.
     await wait(3000)
 
-    fireEvent.click(shuffleAgainButton()!)
-    expect(shuffleAgainButton()).not.toBeInTheDocument()
+    fireEvent.click(spinAgainButton()!)
+    expect(spinAgainButton()).not.toBeInTheDocument()
 
     await wait(3000)
 
-    expect(shuffleAgainButton()).toBeInTheDocument()
+    expect(spinAgainButton()).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /^Test animal/ }).textContent).not.toBe(first)
   })
 

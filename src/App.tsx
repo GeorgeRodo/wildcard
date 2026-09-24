@@ -23,7 +23,7 @@ function App() {
   const start = () => {
     shuffle.start()
     // Settle when this request finishes, rather than when the status
-    // changes: pressing "Shuffle again" goes from success to success, which
+    // changes: pressing "Spin again" goes from success to success, which
     // is no change at all, and the shuffle would never stop.
     void species.load().finally(shuffle.settle)
   }

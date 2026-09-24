@@ -99,7 +99,7 @@ export function Showcase({
             {ready && (
               <div className={styles.footer}>
                 <button type="button" className={styles.primary} onClick={onShuffleAgain}>
-                  Shuffle again
+                  Spin again
                 </button>
                 <button type="button" className={styles.secondary} onClick={onClose}>
                   Close
