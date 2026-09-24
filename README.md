@@ -46,8 +46,9 @@ Animals without a photo are skipped, so the grid never shows an empty tile.
 ## Photos
 
 `photos/` holds the full-size originals and is kept out of git.
-`npm run optimize-images` resizes them to 1200px WebP files in
-`src/assets/animals/`, which is what the site loads. Photos that are
+`npm run optimize-images` resizes them to WebP files in
+`src/assets/animals/`, at 1200px and at 600px in `small/`, which is what
+the site loads. Photos that are
 already converted are skipped; pass `--force` to rebuild them all.
 
 The web-sized photos are committed; the originals are not. Every photo
@@ -88,6 +89,20 @@ allowed to show, and each photographer is credited on the card.
 3. Copy `.env.example` to `.env.local` and fill in the URL, the anon key
    and the service role key.
 4. `npm run seed`
+
+## Mobile
+
+Phones have no hover, so a tap opens a photo straight away, a second tap
+closes it, and tapping anywhere else closes it too. Each tap is checked for
+the kind of pointer that made it, rather than guessing from the device, so
+touch-screen laptops work with a mouse and a finger alike.
+
+Every photo is also built at 600px wide. With `srcset` and `sizes`, the
+browser picks the smallest file that is sharp enough for the tile and the
+screen: a phone downloads about 2 MB of photos instead of 7.6 MB, and has far
+less to hold in memory. The corner buttons and dialogs keep clear of notches
+and home bars, and hover styles only apply where there is a real pointer,
+so they don't stick after a tap.
 
 ## Accessibility
 
