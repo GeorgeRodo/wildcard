@@ -15,6 +15,12 @@ create table if not exists public.animals (
   updated_at timestamptz not null default now()
 );
 
+-- Explicit grants, so this works even on projects that don't expose new
+-- tables to the API automatically. Visitors can only read; the seed
+-- script's service role can write.
+grant select on public.animals to anon, authenticated;
+grant all on public.animals to service_role;
+
 -- The site only ever reads, and the data is public, so anonymous visitors
 -- get select and nothing else. Writes go through the seed script, which
 -- uses the service role key and bypasses these policies.
@@ -39,3 +45,5 @@ as $$
   order by random()
   limit 1;
 $$;
+
+grant execute on function public.random_animal(bigint[]) to anon, authenticated;
