@@ -8,14 +8,18 @@
   /* Lets the pointer through to the photos underneath; the button turns
      this back on for itself. */
   pointer-events: none;
-  transition: opacity 0.2s ease;
+  /* Coming back: unhurried, and only once the photo has started shrinking
+     back out of the way. */
+  transition: opacity 0.45s var(--expand-ease) 0.1s;
 }
 
-/* An open photo near the middle would otherwise sit behind the title.
-   Hidden, the hero must not catch the pointer either, or it would steal it
-   from the open photo and close it. */
+/* An open photo that would cover the title would otherwise sit behind it.
+   Going: quick, so it is gone before the photo reaches it. Hidden, the
+   hero must not catch the pointer either, or it would steal it from the
+   open photo and close it. */
 .hero[data-faded] {
   opacity: 0;
+  transition: opacity 0.15s ease;
 }
 
 .hero[data-faded],
@@ -31,6 +35,13 @@
   flex-direction: column;
   gap: 1.5rem;
   align-items: center;
+  transition: transform 0.45s var(--expand-ease) 0.1s;
+}
+
+/* A slight sink on the way out, so coming back reads as a gentle rise. */
+.hero[data-faded] .content {
+  transform: translateY(0.4rem) scale(0.97);
+  transition: transform 0.15s ease;
 }
 
 /* A scrim: photos are unpredictable, so no amount of text shadow can
