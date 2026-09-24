@@ -9,6 +9,11 @@ machine, then lands on one of 2,600 real species: its photo, taxonomy,
 conservation status, sighting count and a summary. The species come from
 [iNaturalist](https://www.inaturalist.org), stored in a Supabase database.
 
+The shuffle clicks as it spins and chimes when it lands. The sounds are
+synthesised in the browser with the Web Audio API, so there are no audio
+files, and a toggle in the corner mutes them and remembers your choice.
+A credits panel beside it lists every photographer.
+
 Built with React, TypeScript, Vite and Supabase.
 
 ## Getting started
@@ -84,6 +89,15 @@ allowed to show, and each photographer is credited on the card.
    and the service role key.
 4. `npm run seed`
 
+## Accessibility
+
+Both dialogs (the shuffle card and the credits) share one `Modal`
+component. It moves focus into the dialog when it opens, keeps Tab cycling
+inside it, closes on Escape or a click outside, and returns focus to the
+button that opened it. Captions stay available to screen readers even while
+they are visually hidden, and the sound toggle reports its state with
+`aria-pressed`.
+
 ## How the layout works
 
 The wall is always five rows tall. Animals are grouped into columns of
@@ -109,22 +123,30 @@ src/
 ├── api/
 │   ├── supabase.ts         # reads a random animal from our table
 │   └── inaturalist.ts      # fallback: asks iNaturalist directly
+├── audio/
+│   └── sfx.ts              # synthesised tick, chime and error sounds
 ├── components/
 │   ├── AnimalGrid/         # the scrolling wall; decides which tile is expanded
 │   ├── AnimalTile/         # one photo and its caption
+│   ├── Credits/            # the credits panel
 │   ├── Hero/               # title and button, with the scrim behind them
+│   ├── Modal/              # shared dialog: focus, Escape, click outside
 │   ├── Showcase/           # the shuffle card, loading and error states
-│   └── ShuffleButton/
+│   ├── ShuffleButton/
+│   └── Toolbar/            # sound toggle and credits button
 ├── data/
 │   ├── animals.ts          # the wall's animals: names, descriptions, facts
+│   ├── credits.ts          # reads the photo credits from CREDITS.md
 │   └── gallery.ts          # matches each animal to its photo
 ├── hooks/
 │   ├── useHoverIntent.ts   # waits until the pointer rests on a photo
 │   ├── useMarquee.ts       # scrolls the wall left, frame by frame
 │   ├── useShuffle.ts       # the slot-machine flicker
-│   └── useRandomSpecies.ts # fetching, prefetching, errors and retries
+│   ├── useRandomSpecies.ts # fetching, prefetching, errors and retries
+│   └── useSoundEnabled.ts  # the mute setting, remembered between visits
 ├── utils/
-│   └── chunk.ts
+│   ├── chunk.ts
+│   └── shiftToFit.ts       # keeps expanded tiles inside the window
 └── styles/
     └── global.css
 scripts/
