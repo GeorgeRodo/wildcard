@@ -1,6 +1,6 @@
-import { useEffect } from 'react'
 import type { Species } from '../../api/inaturalist'
 import type { GalleryItem } from '../../data/gallery'
+import { Modal } from '../Modal'
 import styles from './Showcase.module.css'
 
 export type ShowcasePhase = 'shuffling' | 'loading' | 'ready' | 'error'
@@ -25,31 +25,11 @@ export function Showcase({
   onRetry,
   onClose,
 }: ShowcaseProps) {
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose()
-    }
-
-    window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
-  }, [onClose])
-
   const ready = phase === 'ready' && species !== null
 
   return (
-    <div
-      className={styles.backdrop}
-      role="dialog"
-      aria-modal="true"
-      aria-label="Random animal"
-      onClick={onClose}
-    >
-      {/* Clicks on the card itself shouldn't close the dialog. */}
-      <div
-        className={styles.card}
-        data-settled={ready || undefined}
-        onClick={(event) => event.stopPropagation()}
-      >
+    <Modal label="Random animal" onClose={onClose}>
+      <div className={styles.card} data-settled={ready || undefined}>
         {phase === 'error' ? (
           <div className={styles.message} role="alert">
             <h2 className={styles.name}>No luck</h2>
@@ -125,6 +105,6 @@ export function Showcase({
           </>
         )}
       </div>
-    </div>
+    </Modal>
   )
 }
