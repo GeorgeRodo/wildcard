@@ -57,6 +57,29 @@
   color: #f5c542;
 }
 
+.about {
+  margin: 1rem 0 0;
+  font-size: 1.05rem;
+}
+
+.stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  padding: 0.25rem 0.7rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: rgb(255 255 255 / 0.08);
+  border: 1px solid rgb(255 255 255 / 0.12);
+  border-radius: 999px;
+}
+
 .note {
   margin: 0 0 0.75rem;
   font-size: 0.85rem;

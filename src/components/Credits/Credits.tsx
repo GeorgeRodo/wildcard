@@ -2,6 +2,19 @@ import { photoCredits } from '../../data/credits'
 import { Modal } from '../Modal'
 import styles from './Credits.module.css'
 
+const TECH_STACK = [
+  'React',
+  'TypeScript',
+  'Vite',
+  'CSS Modules',
+  'Supabase',
+  'PostgreSQL',
+  'iNaturalist API',
+  'Web Audio API',
+  'sharp',
+  'Oxlint',
+]
+
 interface CreditsProps {
   onClose: () => void
 }
@@ -18,6 +31,20 @@ export function Credits({ onClose }: CreditsProps) {
         </header>
 
         <div className={styles.body}>
+          <p className={styles.about}>
+            Wildcard was designed and built by <strong>George Rodopoulos</strong>.
+          </p>
+
+          <h3 className={styles.subtitle}>Built with</h3>
+          <ul className={styles.stack}>
+            {TECH_STACK.map((tool) => (
+              <li key={tool} className={styles.chip}>
+                {tool}
+              </li>
+            ))}
+          </ul>
+
+          <h3 className={styles.subtitle}>Data and sound</h3>
           <p>
             Species, photos and sighting counts in the shuffle come from{' '}
             <a href="https://www.inaturalist.org" target="_blank" rel="noreferrer">
