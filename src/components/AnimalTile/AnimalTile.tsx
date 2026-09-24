@@ -10,18 +10,26 @@ interface AnimalTileProps {
   animal: GalleryItem
   expanded: boolean
   dimmed: boolean
-  onMouseEnter: () => void
-  onMouseLeave: () => void
+  /** A mouse moved onto the photo. */
+  onHoverStart: () => void
+  /** A mouse moved off it. */
+  onHoverEnd: () => void
+  /** A finger or pen tapped it. */
+  onTap: () => void
 }
 
 export function AnimalTile({
   animal,
   expanded,
   dimmed,
-  onMouseEnter,
-  onMouseLeave,
+  onHoverStart,
+  onHoverEnd,
+  onTap,
 }: AnimalTileProps) {
   const ref = useRef<HTMLElement>(null)
+  // Phones fire fake mouse events after a tap, so what matters is the kind
+  // of pointer that started the interaction, not the event that follows.
+  const pointerType = useRef('mouse')
 
   // A tile scales up from its centre, so one on the edge of the window would
   // grow past it and get cut off. Work out how far to nudge it back inside
@@ -60,8 +68,18 @@ export function AnimalTile({
       className={styles.tile}
       data-expanded={expanded || undefined}
       data-dimmed={dimmed || undefined}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
+      onPointerDown={(event) => {
+        pointerType.current = event.pointerType
+      }}
+      onPointerEnter={(event) => {
+        if (event.pointerType === 'mouse') onHoverStart()
+      }}
+      onPointerLeave={(event) => {
+        if (event.pointerType === 'mouse') onHoverEnd()
+      }}
+      onClick={() => {
+        if (pointerType.current !== 'mouse') onTap()
+      }}
     >
       <img
         className={styles.image}

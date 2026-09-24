@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import type { GalleryItem } from '../../data/gallery'
 import { useHoverIntent } from '../../hooks/useHoverIntent'
 import { useMarquee } from '../../hooks/useMarquee'
@@ -22,9 +23,24 @@ interface AnimalGridProps {
 
 export function AnimalGrid({ animals, paused = false }: AnimalGridProps) {
   const columns = chunk(animals, ROWS)
-  const { active: expandedKey, enter, leave } = useHoverIntent<string>(HOVER_DELAY_MS)
+  const { active: expandedKey, enter, leave, toggle } = useHoverIntent<string>(HOVER_DELAY_MS)
   // Two copies of the columns, so the wall can loop without a visible seam.
   const trackRef = useMarquee<HTMLDivElement>(SCROLL_SPEED, paused || expandedKey !== null)
+
+  // A mouse closes a photo by moving off it. A finger can't, so a tap
+  // anywhere other than the open photo closes it instead.
+  useEffect(() => {
+    if (expandedKey === null) return
+
+    const onPointerDown = (event: PointerEvent) => {
+      if (event.pointerType === 'mouse') return
+      const target = event.target instanceof Element ? event.target : null
+      if (!target?.closest('[data-expanded]')) leave()
+    }
+
+    document.addEventListener('pointerdown', onPointerDown)
+    return () => document.removeEventListener('pointerdown', onPointerDown)
+  }, [expandedKey, leave])
 
   return (
     <div className={styles.viewport}>
@@ -47,8 +63,9 @@ export function AnimalGrid({ animals, paused = false }: AnimalGridProps) {
                     animal={animal}
                     expanded={keyFor(animal) === expandedKey}
                     dimmed={expandedKey !== null && keyFor(animal) !== expandedKey}
-                    onMouseEnter={() => enter(keyFor(animal))}
-                    onMouseLeave={leave}
+                    onHoverStart={() => enter(keyFor(animal))}
+                    onHoverEnd={leave}
+                    onTap={() => toggle(keyFor(animal))}
                   />
                 ))}
               </div>
