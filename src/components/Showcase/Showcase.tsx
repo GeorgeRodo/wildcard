@@ -86,15 +86,6 @@ export function Showcase({
                   </p>
 
                   <p className={styles.credit}>Photo: {species.photo.attribution}</p>
-
-                  <div className={styles.actions}>
-                    <button type="button" className={styles.primary} onClick={onShuffleAgain}>
-                      Shuffle again
-                    </button>
-                    <button type="button" className={styles.secondary} onClick={onClose}>
-                      Close
-                    </button>
-                  </div>
                 </>
               ) : (
                 <p className={styles.searching}>
@@ -102,6 +93,19 @@ export function Showcase({
                 </p>
               )}
             </div>
+
+            {/* Outside the scrolling text, so a long summary can never push
+                the buttons off a small screen. */}
+            {ready && (
+              <div className={styles.footer}>
+                <button type="button" className={styles.primary} onClick={onShuffleAgain}>
+                  Shuffle again
+                </button>
+                <button type="button" className={styles.secondary} onClick={onClose}>
+                  Close
+                </button>
+              </div>
+            )}
           </>
         )}
       </div>
