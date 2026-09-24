@@ -32,7 +32,10 @@ export function Credits({ onClose }: CreditsProps) {
 
         <div className={styles.body}>
           <p className={styles.about}>
-            Wildcard was designed and built by <strong>George Rodopoulos</strong>.
+            Wildcard was designed and built by <strong>George Rodopoulos</strong>.{' '}
+            <a href="https://github.com/GeorgeRodo" target="_blank" rel="noreferrer">
+              GitHub
+            </a>
           </p>
 
           <h3 className={styles.subtitle}>Built with</h3>
