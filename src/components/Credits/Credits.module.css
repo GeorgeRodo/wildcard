@@ -33,8 +33,12 @@
   cursor: pointer;
 }
 
-.close:hover {
-  background: rgb(255 255 255 / 0.2);
+/* Touch screens keep :hover applied after a tap, so only style it where
+   there's a real pointer to hover with. */
+@media (hover: hover) {
+  .close:hover {
+    background: rgb(255 255 255 / 0.2);
+  }
 }
 
 /* Only the body scrolls, so the title and Close stay in view. */

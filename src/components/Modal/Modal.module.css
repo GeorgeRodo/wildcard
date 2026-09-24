@@ -4,7 +4,8 @@
   inset: 0;
   display: grid;
   place-items: center;
-  padding: 2rem;
+  padding: max(2rem, env(safe-area-inset-top)) max(2rem, env(safe-area-inset-right))
+    max(2rem, env(safe-area-inset-bottom)) max(2rem, env(safe-area-inset-left));
   background: rgb(0 0 0 / 0.72);
   backdrop-filter: blur(6px);
   animation: fade 0.25s var(--expand-ease);
@@ -24,6 +25,14 @@
    the card should catch clicks; the rest of the row is backdrop. */
 .dialog > * {
   pointer-events: auto;
+}
+
+/* A phone can't spare 2rem on each side. */
+@media (max-width: 34rem) {
+  .backdrop {
+    padding: max(0.75rem, env(safe-area-inset-top)) max(0.75rem, env(safe-area-inset-right))
+      max(0.75rem, env(safe-area-inset-bottom)) max(0.75rem, env(safe-area-inset-left));
+  }
 }
 
 @keyframes fade {

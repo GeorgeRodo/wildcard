@@ -17,8 +17,16 @@ body,
   margin: 0;
 }
 
+html {
+  /* Stop phones enlarging text when they rotate to landscape. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   background: #111;
+  /* No grey flash over whatever was tapped. */
+  -webkit-tap-highlight-color: transparent;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
@@ -26,4 +34,12 @@ body {
 img {
   display: block;
   max-width: 100%;
+}
+
+/* Removes the delay browsers add while they wait to see if a tap is the
+   start of a double-tap zoom. */
+button,
+a,
+figure {
+  touch-action: manipulation;
 }
