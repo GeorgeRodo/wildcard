@@ -1,6 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { playError, playReveal, playTick } from './audio/sfx'
 import { AnimalGrid } from './components/AnimalGrid'
+import { Credits } from './components/Credits'
 import { Hero } from './components/Hero'
 import { Showcase, type ShowcasePhase } from './components/Showcase'
 import { Toolbar } from './components/Toolbar'
@@ -15,6 +16,7 @@ function App() {
   const shuffle = useShuffle(gallery, playTick)
   const species = useRandomSpecies()
   const [soundOn, setSoundOn] = useSoundEnabled()
+  const [creditsOpen, setCreditsOpen] = useState(false)
 
   const open = shuffle.status !== 'idle'
 
@@ -47,9 +49,13 @@ function App() {
 
   return (
     <main>
-      <AnimalGrid animals={gallery} paused={open} />
+      <AnimalGrid animals={gallery} paused={open || creditsOpen} />
       <Hero onShuffle={start} />
-      <Toolbar soundOn={soundOn} onToggleSound={() => setSoundOn((on) => !on)} />
+      <Toolbar
+        soundOn={soundOn}
+        onToggleSound={() => setSoundOn((on) => !on)}
+        onOpenCredits={() => setCreditsOpen(true)}
+      />
       {open && (
         <Showcase
           phase={phase}
@@ -61,6 +67,7 @@ function App() {
           onClose={close}
         />
       )}
+      {creditsOpen && <Credits onClose={() => setCreditsOpen(false)} />}
     </main>
   )
 }

@@ -1,0 +1,106 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  width: min(42rem, 100%);
+  max-height: min(40rem, 85vh);
+  color: #fff;
+  background: #16181a;
+  border-radius: 0.75rem;
+  box-shadow: 0 1.5rem 4rem rgb(0 0 0 / 0.6);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgb(255 255 255 / 0.1);
+}
+
+.title {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.close {
+  padding: 0.5rem 1rem;
+  font: inherit;
+  font-weight: 600;
+  color: #fff;
+  background: rgb(255 255 255 / 0.12);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.close:hover {
+  background: rgb(255 255 255 / 0.2);
+}
+
+/* Only the body scrolls, so the title and Close stay in view. */
+.body {
+  padding: 0.25rem 1.5rem 1.5rem;
+  overflow-y: auto;
+  line-height: 1.5;
+}
+
+.body a {
+  color: #f5c542;
+}
+
+.subtitle {
+  margin: 1.5rem 0 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #f5c542;
+}
+
+.note {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 11rem 1fr auto;
+  gap: 1rem;
+  padding: 0.45rem 0;
+  font-size: 0.85rem;
+  border-top: 1px solid rgb(255 255 255 / 0.07);
+}
+
+.animal {
+  font-weight: 600;
+}
+
+.photographer {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 0.8;
+}
+
+.licence {
+  white-space: nowrap;
+}
+
+/* On a narrow screen the photographer drops under the animal's name. */
+@media (max-width: 34rem) {
+  .row {
+    grid-template-columns: 1fr auto;
+  }
+
+  .photographer {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}

@@ -3,9 +3,10 @@ import styles from './Toolbar.module.css'
 interface ToolbarProps {
   soundOn: boolean
   onToggleSound: () => void
+  onOpenCredits: () => void
 }
 
-export function Toolbar({ soundOn, onToggleSound }: ToolbarProps) {
+export function Toolbar({ soundOn, onToggleSound, onOpenCredits }: ToolbarProps) {
   return (
     <div className={styles.toolbar}>
       <button
@@ -17,6 +18,9 @@ export function Toolbar({ soundOn, onToggleSound }: ToolbarProps) {
         onClick={onToggleSound}
       >
         <SpeakerIcon muted={!soundOn} />
+      </button>
+      <button type="button" className={styles.button} onClick={onOpenCredits}>
+        Credits
       </button>
     </div>
   )
