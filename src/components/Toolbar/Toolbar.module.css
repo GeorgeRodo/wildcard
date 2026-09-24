@@ -1,0 +1,38 @@
+.toolbar {
+  position: fixed;
+  z-index: 6;
+  right: 1rem;
+  bottom: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.button {
+  display: inline-flex;
+  gap: 0.4rem;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0 0.75rem;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+  background: rgb(22 24 26 / 0.7);
+  border: 1px solid rgb(255 255 255 / 0.15);
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.button:hover,
+.button:focus-visible {
+  background: rgb(22 24 26 / 0.9);
+}
+
+.button:focus-visible {
+  outline: 2px solid #f5c542;
+  outline-offset: 2px;
+}

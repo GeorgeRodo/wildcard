@@ -3,15 +3,18 @@ import { playError, playReveal, playTick } from './audio/sfx'
 import { AnimalGrid } from './components/AnimalGrid'
 import { Hero } from './components/Hero'
 import { Showcase, type ShowcasePhase } from './components/Showcase'
+import { Toolbar } from './components/Toolbar'
 import { gallery } from './data/gallery'
 import { useRandomSpecies } from './hooks/useRandomSpecies'
 import { useShuffle } from './hooks/useShuffle'
+import { useSoundEnabled } from './hooks/useSoundEnabled'
 
 function App() {
   // The shuffle is the local flicker through the wall; the species comes
   // from our database. The shuffle runs until the request has finished.
   const shuffle = useShuffle(gallery, playTick)
   const species = useRandomSpecies()
+  const [soundOn, setSoundOn] = useSoundEnabled()
 
   const open = shuffle.status !== 'idle'
 
@@ -46,6 +49,7 @@ function App() {
     <main>
       <AnimalGrid animals={gallery} paused={open} />
       <Hero onShuffle={start} />
+      <Toolbar soundOn={soundOn} onToggleSound={() => setSoundOn((on) => !on)} />
       {open && (
         <Showcase
           phase={phase}
