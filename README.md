@@ -118,7 +118,10 @@ build.
 ## Mobile
 
 Phones have no hover, so a tap opens a photo straight away, a second tap
-closes it, and tapping anywhere else closes it too. Each tap is checked for
+closes it, and tapping anywhere else closes it too. The wall can also be
+swiped either way: it follows the finger, glides on with momentum after a
+flick, then eases back into its drift. A swipe that starts on a photo
+doesn't open it. Each tap is checked for
 the kind of pointer that made it, rather than guessing from the device, so
 touch-screen laptops work with a mouse and a finger alike.
 
