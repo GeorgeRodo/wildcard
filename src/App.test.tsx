@@ -102,6 +102,28 @@ describe('App', () => {
     expect(tile).not.toHaveAttribute('data-expanded')
   })
 
+  it('only closes an open photo when another is tapped, without opening that one', () => {
+    render(<App />)
+    const [first, second] = screen.getAllByRole('figure')
+    const tap = (tile: HTMLElement) => {
+      fireEvent.pointerDown(tile, { pointerType: 'touch' })
+      fireEvent.pointerUp(tile, { pointerType: 'touch' })
+      fireEvent.click(tile)
+    }
+
+    tap(first)
+    expect(first).toHaveAttribute('data-expanded')
+
+    // Tapping away closes the open photo, and that's all it does.
+    tap(second)
+    expect(first).not.toHaveAttribute('data-expanded')
+    expect(second).not.toHaveAttribute('data-expanded')
+
+    // The next tap is an ordinary one again.
+    tap(second)
+    expect(second).toHaveAttribute('data-expanded')
+  })
+
   it('closes the card and hands focus back to the button', async () => {
     render(<App />)
     await wait(3000)

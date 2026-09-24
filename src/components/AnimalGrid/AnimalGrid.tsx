@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { GalleryItem } from '../../data/gallery'
 import { useHoverIntent } from '../../hooks/useHoverIntent'
 import { useMarquee } from '../../hooks/useMarquee'
@@ -37,19 +37,35 @@ export function AnimalGrid({ animals, paused = false, onOpenAreaChange }: Animal
   }, [openArea, onOpenAreaChange])
 
   // A mouse closes a photo by moving off it. A finger can't, so a tap
-  // anywhere other than the open photo closes it instead.
-  useEffect(() => {
-    if (expandedKey === null) return
+  // anywhere other than the open photo closes it instead. That tap is used
+  // up by the closing: if it landed on another photo, it mustn't open that
+  // one too. Each new touch starts the check afresh.
+  const photoOpen = useRef(false)
+  const tapClosedPhoto = useRef(false)
 
+  useEffect(() => {
+    photoOpen.current = expandedKey !== null
+  }, [expandedKey])
+
+  useEffect(() => {
     const onPointerDown = (event: PointerEvent) => {
-      if (event.pointerType === 'mouse') return
+      tapClosedPhoto.current = false
+      if (event.pointerType === 'mouse' || !photoOpen.current) return
+
       const target = event.target instanceof Element ? event.target : null
-      if (!target?.closest('[data-expanded]')) leave()
+      if (!target?.closest('[data-expanded]')) {
+        tapClosedPhoto.current = true
+        leave()
+      }
     }
 
-    document.addEventListener('pointerdown', onPointerDown)
-    return () => document.removeEventListener('pointerdown', onPointerDown)
-  }, [expandedKey, leave])
+    document.addEventListener('pointerdown', onPointerDown, true)
+    return () => document.removeEventListener('pointerdown', onPointerDown, true)
+  }, [leave])
+
+  const tap = (key: string) => {
+    if (!tapClosedPhoto.current) toggle(key)
+  }
 
   return (
     <div className={styles.viewport}>
@@ -74,7 +90,7 @@ export function AnimalGrid({ animals, paused = false, onOpenAreaChange }: Animal
                     dimmed={expandedKey !== null && keyFor(animal) !== expandedKey}
                     onHoverStart={() => enter(keyFor(animal))}
                     onHoverEnd={leave}
-                    onTap={() => toggle(keyFor(animal))}
+                    onTap={() => tap(keyFor(animal))}
                     onGrown={setGrownArea}
                   />
                 ))}
