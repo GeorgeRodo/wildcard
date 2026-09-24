@@ -23,9 +23,10 @@
   width: calc(100vw / var(--visible-columns));
 }
 
-/* Fewer columns fit side by side on a phone held upright. */
+/* Three narrower columns on a phone held upright: more animals on screen,
+   and an open photo grows further (see AnimalTile) to make up for it. */
 @media (orientation: portrait) {
   .viewport {
-    --visible-columns: 2;
+    --visible-columns: 3;
   }
 }

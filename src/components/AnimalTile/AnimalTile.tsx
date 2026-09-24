@@ -86,9 +86,9 @@ export function AnimalTile({
         src={animal.imageSmall}
         // The browser picks the smallest file that is sharp enough for the
         // tile's width and the screen's pixel density. Tiles are a sixth of
-        // the screen wide, or half on a portrait screen.
+        // the screen wide, or a third on a portrait screen.
         srcSet={`${animal.imageSmall} 600w, ${animal.image} 1200w`}
-        sizes="(orientation: portrait) 50vw, 17vw"
+        sizes="(orientation: portrait) 34vw, 17vw"
         alt={animal.name}
         loading="lazy"
         decoding="async"
