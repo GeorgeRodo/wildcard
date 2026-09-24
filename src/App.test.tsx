@@ -86,6 +86,26 @@ describe('App', () => {
     expect(screen.getByRole('heading', { name: /^Test animal/ }).textContent).not.toBe(first)
   })
 
+  it('fades the title while a photo on the wall is open', async () => {
+    render(<App />)
+    const title = screen.getByRole('heading', { name: 'Wildcard' })
+    const hero = () => title.closest('[data-faded]')
+    expect(hero()).toBeNull()
+
+    const tile = screen.getAllByRole('figure')[0]
+    const tap = () => {
+      fireEvent.pointerDown(tile, { pointerType: 'touch' })
+      fireEvent.pointerUp(tile, { pointerType: 'touch' })
+      fireEvent.click(tile)
+    }
+
+    tap()
+    expect(hero()).not.toBeNull()
+
+    tap()
+    expect(hero()).toBeNull()
+  })
+
   it('closes the card and hands focus back to the button', async () => {
     render(<App />)
     await wait(3000)

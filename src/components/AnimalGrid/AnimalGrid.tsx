@@ -19,13 +19,20 @@ interface AnimalGridProps {
   animals: GalleryItem[]
   /** Holds the wall still, e.g. while the showcase is open. */
   paused?: boolean
+  /** Called when a photo opens or closes. */
+  onExpandedChange?: (expanded: boolean) => void
 }
 
-export function AnimalGrid({ animals, paused = false }: AnimalGridProps) {
+export function AnimalGrid({ animals, paused = false, onExpandedChange }: AnimalGridProps) {
   const columns = chunk(animals, ROWS)
   const { active: expandedKey, enter, leave, toggle } = useHoverIntent<string>(HOVER_DELAY_MS)
   // Two copies of the columns, so the wall can loop without a visible seam.
   const trackRef = useMarquee<HTMLDivElement>(SCROLL_SPEED, paused || expandedKey !== null)
+
+  const photoOpen = expandedKey !== null
+  useEffect(() => {
+    onExpandedChange?.(photoOpen)
+  }, [photoOpen, onExpandedChange])
 
   // A mouse closes a photo by moving off it. A finger can't, so a tap
   // anywhere other than the open photo closes it instead.

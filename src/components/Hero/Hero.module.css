@@ -3,13 +3,34 @@
   z-index: 5;
   inset: 0;
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
   align-items: center;
   justify-content: center;
   /* Lets the pointer through to the photos underneath; the button turns
      this back on for itself. */
   pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+/* An open photo near the middle would otherwise sit behind the title.
+   Hidden, the hero must not catch the pointer either, or it would steal it
+   from the open photo and close it. */
+.hero[data-faded] {
+  opacity: 0;
+}
+
+.hero[data-faded],
+.hero[data-faded]::after,
+.hero[data-faded] * {
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
 }
 
 /* A scrim: photos are unpredictable, so no amount of text shadow can
@@ -46,16 +67,7 @@
   pointer-events: auto;
 }
 
-/* The scrim and its hit-area are positioned, so the content needs to sit
-   above them to stay visible and clickable. */
-.hero > button {
-  position: relative;
-  z-index: 1;
-}
-
 .title {
-  position: relative;
-  z-index: 1;
   margin: 0;
   font-size: clamp(2.5rem, 9vw, 7rem);
   font-weight: 700;
@@ -64,4 +76,30 @@
   color: #fff;
   /* Backs up the scrim on the brightest photos. */
   text-shadow: 0 0.08em 0.35em rgb(0 0 0 / 0.55);
+}
+
+/* An oval sized to the window is the wrong shape on a tall, narrow screen:
+   it never lines up with the title. Phones get a frosted panel that fits
+   the title and button exactly instead, and the panel itself is what
+   stops taps reaching the photos behind it. */
+@media (orientation: portrait), (max-width: 40rem) {
+  .hero::before,
+  .hero::after {
+    display: none;
+  }
+
+  .content {
+    gap: 1rem;
+    padding: 1.5rem 2rem;
+    background: rgb(0 0 0 / 0.55);
+    border: 1px solid rgb(255 255 255 / 0.12);
+    border-radius: 1.25rem;
+    box-shadow: 0 1rem 2.5rem rgb(0 0 0 / 0.45);
+    backdrop-filter: blur(12px);
+    pointer-events: auto;
+  }
+
+  .title {
+    font-size: clamp(2.25rem, 11vw, 3.5rem);
+  }
 }

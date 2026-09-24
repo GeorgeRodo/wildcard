@@ -17,6 +17,7 @@ function App() {
   const species = useRandomSpecies()
   const [soundOn, setSoundOn] = useSoundEnabled()
   const [creditsOpen, setCreditsOpen] = useState(false)
+  const [photoOpen, setPhotoOpen] = useState(false)
 
   const open = shuffle.status !== 'idle'
 
@@ -49,8 +50,12 @@ function App() {
 
   return (
     <main>
-      <AnimalGrid animals={gallery} paused={open || creditsOpen} />
-      <Hero onShuffle={start} />
+      <AnimalGrid
+        animals={gallery}
+        paused={open || creditsOpen}
+        onExpandedChange={setPhotoOpen}
+      />
+      <Hero onShuffle={start} faded={photoOpen} />
       <Toolbar
         soundOn={soundOn}
         onToggleSound={() => setSoundOn((on) => !on)}
