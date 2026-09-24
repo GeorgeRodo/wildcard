@@ -46,3 +46,14 @@
   outline: 2px solid #f5c542;
   outline-offset: 2px;
 }
+
+/* On phones the bottom of the screen is where thumbs and the browser's own
+   controls are, so the toolbar moves to the top corner. Same breakpoint as
+   the title's phone layout. */
+@media (orientation: portrait), (max-width: 40rem) {
+  .toolbar {
+    top: max(0.75rem, env(safe-area-inset-top));
+    right: max(0.75rem, env(safe-area-inset-right));
+    bottom: auto;
+  }
+}
