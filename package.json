@@ -2,6 +2,8 @@
   "name": "wildcard",
   "private": true,
   "version": "0.0.0",
+  "license": "MIT",
+  "author": "George Rodopoulos",
   "type": "module",
   "scripts": {
     "dev": "vite",

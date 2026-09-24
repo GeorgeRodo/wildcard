@@ -198,3 +198,10 @@ scripts/
 supabase/
 └── schema.sql              # table, read-only policy, random_animal()
 ```
+
+## Licence
+
+The code is [MIT licensed](LICENSE). The photos are not: each one belongs
+to its photographer and is used under the licence listed in
+[CREDITS.md](CREDITS.md). Species data and photos in the shuffle come from
+iNaturalist and stay under their contributors' licences.
