@@ -1,4 +1,7 @@
 .tile {
+  /* Read by AnimalTile.tsx too, to keep edge tiles inside the window. */
+  --expand-scale: 1.35;
+
   position: relative;
   flex: 1 1 0;
   min-width: 0;
@@ -13,10 +16,11 @@
 
 /* The expanded tile scales up over its neighbours rather than pushing
    them aside, so nothing else in the wall moves. Scaling also runs on the
-   GPU, which keeps it smooth while the wall is scrolling. */
+   GPU, which keeps it smooth while the wall is scrolling. The shift,
+   set from AnimalTile.tsx, moves tiles on the edges back inside the window. */
 .tile[data-expanded] {
   z-index: 2;
-  transform: scale(1.35);
+  transform: translate(var(--shift-x, 0), var(--shift-y, 0)) scale(var(--expand-scale));
   box-shadow: 0 0.75rem 2rem rgb(0 0 0 / 0.55);
 }
 
