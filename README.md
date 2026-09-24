@@ -97,6 +97,12 @@ allowed to show, and each photographer is credited on the card.
    and the service role key.
 4. `npm run seed`
 
+Free Supabase projects pause after a week without requests. A scheduled
+workflow, `.github/workflows/keep-supabase-awake.yml`, asks the database for
+an animal twice a week to keep it awake. It needs two repository secrets:
+`SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` (the public key, never the
+secret one).
+
 ## Tests
 
 Vitest with React Testing Library, run on every push and pull request by
