@@ -1,0 +1,9 @@
+import '@testing-library/jest-dom/vitest'
+import { cleanup } from '@testing-library/react'
+import { afterEach } from 'vitest'
+
+// Testing Library only cleans up automatically when test globals are on,
+// and this project imports describe/it/expect explicitly instead.
+afterEach(() => {
+  cleanup()
+})
