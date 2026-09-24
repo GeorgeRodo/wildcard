@@ -1,5 +1,9 @@
 # Wildcard
 
+[![CI](https://github.com/GeorgeRodo/wildcard/actions/workflows/ci.yml/badge.svg)](https://github.com/GeorgeRodo/wildcard/actions/workflows/ci.yml)
+
+**Live:** https://wildcard-green.vercel.app
+
 A full-screen wall of wild animal photos that drifts slowly sideways. Rest
 the mouse on a photo and it grows to show the animal's scientific name and
 a weird fact.
@@ -31,6 +35,9 @@ npm run dev
 | `npm run build`   | Type-check and build for production |
 | `npm run preview` | Preview the production build        |
 | `npm run lint`    | Lint the project with Oxlint        |
+| `npm test`        | Run the tests once                  |
+| `npm run test:watch` | Re-run the tests on every change |
+| `npm run typecheck` | Type-check without building       |
 | `npm run optimize-images` | Build web-sized photos from the originals |
 | `npm run seed`    | Fill the Supabase table from iNaturalist |
 
@@ -89,6 +96,24 @@ allowed to show, and each photographer is credited on the card.
 3. Copy `.env.example` to `.env.local` and fill in the URL, the anon key
    and the service role key.
 4. `npm run seed`
+
+## Tests
+
+Vitest with React Testing Library, run on every push and pull request by
+GitHub Actions, alongside the linter, the type-checker and a production
+build.
+
+- **Pure logic:** `chunk`, the edge-fitting maths in `shiftToFit`, and the
+  credits parser, including a check that every photo on the wall has a
+  credit.
+- **Hooks:** `useShuffle` and `useHoverIntent`, with fake timers so the
+  tests control time instead of waiting for it: the minimum shuffle
+  duration, never repeating an item, mouse hover versus finger taps.
+- **Components:** the `Modal`'s focus handling, Tab trapping, Escape, and
+  stacked dialogs.
+- **The app:** a full shuffle against a mocked database, plus a regression
+  test for a real bug where "Shuffle again" never stopped. With the old
+  code put back, that test fails.
 
 ## Mobile
 
