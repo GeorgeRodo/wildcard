@@ -4,6 +4,9 @@
   position: fixed;
   inset: 0;
   overflow: hidden;
+  /* Sideways swipes drag the wall (see useMarquee), so the browser mustn't
+     claim them for itself. Vertical pans and pinch-zoom stay with it. */
+  touch-action: pan-y pinch-zoom;
 }
 
 .track {
