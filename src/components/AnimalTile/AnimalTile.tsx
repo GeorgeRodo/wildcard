@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef } from 'react'
 import type { GalleryItem } from '../../data/gallery'
+import type { Rect } from '../../utils/rects'
 import { shiftToFit } from '../../utils/shiftToFit'
 import styles from './AnimalTile.module.css'
 
@@ -16,6 +17,8 @@ interface AnimalTileProps {
   onHoverEnd: () => void
   /** A finger or pen tapped it. */
   onTap: () => void
+  /** Where the photo will sit once it has finished growing. */
+  onGrown?: (area: Rect) => void
 }
 
 export function AnimalTile({
@@ -25,6 +28,7 @@ export function AnimalTile({
   onHoverStart,
   onHoverEnd,
   onTap,
+  onGrown,
 }: AnimalTileProps) {
   const ref = useRef<HTMLElement>(null)
   // Phones fire fake mouse events after a tap, so what matters is the kind
@@ -46,13 +50,14 @@ export function AnimalTile({
     const columnBox = column.getBoundingClientRect()
     const scale = Number.parseFloat(getComputedStyle(tile).getPropertyValue('--expand-scale'))
 
+    const box = {
+      left: columnBox.left,
+      top: columnBox.top + tile.offsetTop - column.offsetTop,
+      width: tile.offsetWidth,
+      height: tile.offsetHeight,
+    }
     const shift = shiftToFit(
-      {
-        left: columnBox.left,
-        top: columnBox.top + tile.offsetTop - column.offsetTop,
-        width: tile.offsetWidth,
-        height: tile.offsetHeight,
-      },
+      box,
       scale,
       { width: window.innerWidth, height: window.innerHeight },
       EDGE_MARGIN,
@@ -60,7 +65,15 @@ export function AnimalTile({
 
     tile.style.setProperty('--shift-x', `${shift.x}px`)
     tile.style.setProperty('--shift-y', `${shift.y}px`)
-  }, [expanded])
+
+    // Known before the grow animation even starts, so anything the photo
+    // is about to cover can get out of the way in time.
+    const width = box.width * scale
+    const height = box.height * scale
+    const left = box.left + box.width / 2 - width / 2 + shift.x
+    const top = box.top + box.height / 2 - height / 2 + shift.y
+    onGrown?.({ left, top, right: left + width, bottom: top + height })
+  }, [expanded, onGrown])
 
   return (
     <figure

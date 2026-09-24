@@ -86,12 +86,8 @@ describe('App', () => {
     expect(screen.getByRole('heading', { name: /^Test animal/ }).textContent).not.toBe(first)
   })
 
-  it('fades the title while a photo on the wall is open', async () => {
+  it('opens a photo on the wall with a tap, and closes it with another', () => {
     render(<App />)
-    const title = screen.getByRole('heading', { name: 'Wildcard' })
-    const hero = () => title.closest('[data-faded]')
-    expect(hero()).toBeNull()
-
     const tile = screen.getAllByRole('figure')[0]
     const tap = () => {
       fireEvent.pointerDown(tile, { pointerType: 'touch' })
@@ -100,10 +96,10 @@ describe('App', () => {
     }
 
     tap()
-    expect(hero()).not.toBeNull()
+    expect(tile).toHaveAttribute('data-expanded')
 
     tap()
-    expect(hero()).toBeNull()
+    expect(tile).not.toHaveAttribute('data-expanded')
   })
 
   it('closes the card and hands focus back to the button', async () => {

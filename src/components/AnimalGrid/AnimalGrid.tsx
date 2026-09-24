@@ -1,8 +1,9 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import type { GalleryItem } from '../../data/gallery'
 import { useHoverIntent } from '../../hooks/useHoverIntent'
 import { useMarquee } from '../../hooks/useMarquee'
 import { chunk } from '../../utils/chunk'
+import type { Rect } from '../../utils/rects'
 import { AnimalTile } from '../AnimalTile'
 import styles from './AnimalGrid.module.css'
 
@@ -19,20 +20,21 @@ interface AnimalGridProps {
   animals: GalleryItem[]
   /** Holds the wall still, e.g. while the showcase is open. */
   paused?: boolean
-  /** Called when a photo opens or closes. */
-  onExpandedChange?: (expanded: boolean) => void
+  /** Called with the area an open photo covers, or null once it closes. */
+  onOpenAreaChange?: (area: Rect | null) => void
 }
 
-export function AnimalGrid({ animals, paused = false, onExpandedChange }: AnimalGridProps) {
+export function AnimalGrid({ animals, paused = false, onOpenAreaChange }: AnimalGridProps) {
   const columns = chunk(animals, ROWS)
   const { active: expandedKey, enter, leave, toggle } = useHoverIntent<string>(HOVER_DELAY_MS)
   // Two copies of the columns, so the wall can loop without a visible seam.
   const trackRef = useMarquee<HTMLDivElement>(SCROLL_SPEED, paused || expandedKey !== null)
 
-  const photoOpen = expandedKey !== null
+  const [grownArea, setGrownArea] = useState<Rect | null>(null)
+  const openArea = expandedKey === null ? null : grownArea
   useEffect(() => {
-    onExpandedChange?.(photoOpen)
-  }, [photoOpen, onExpandedChange])
+    onOpenAreaChange?.(openArea)
+  }, [openArea, onOpenAreaChange])
 
   // A mouse closes a photo by moving off it. A finger can't, so a tap
   // anywhere other than the open photo closes it instead.
@@ -73,6 +75,7 @@ export function AnimalGrid({ animals, paused = false, onExpandedChange }: Animal
                     onHoverStart={() => enter(keyFor(animal))}
                     onHoverEnd={leave}
                     onTap={() => toggle(keyFor(animal))}
+                    onGrown={setGrownArea}
                   />
                 ))}
               </div>

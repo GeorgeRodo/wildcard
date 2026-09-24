@@ -8,6 +8,7 @@ import { Toolbar } from './components/Toolbar'
 import { gallery } from './data/gallery'
 import { useRandomSpecies } from './hooks/useRandomSpecies'
 import { useShuffle } from './hooks/useShuffle'
+import type { Rect } from './utils/rects'
 import { useSoundEnabled } from './hooks/useSoundEnabled'
 
 function App() {
@@ -17,7 +18,7 @@ function App() {
   const species = useRandomSpecies()
   const [soundOn, setSoundOn] = useSoundEnabled()
   const [creditsOpen, setCreditsOpen] = useState(false)
-  const [photoOpen, setPhotoOpen] = useState(false)
+  const [openPhotoArea, setOpenPhotoArea] = useState<Rect | null>(null)
 
   const open = shuffle.status !== 'idle'
 
@@ -53,9 +54,9 @@ function App() {
       <AnimalGrid
         animals={gallery}
         paused={open || creditsOpen}
-        onExpandedChange={setPhotoOpen}
+        onOpenAreaChange={setOpenPhotoArea}
       />
-      <Hero onShuffle={start} faded={photoOpen} />
+      <Hero onShuffle={start} obstruction={openPhotoArea} />
       <Toolbar
         soundOn={soundOn}
         onToggleSound={() => setSoundOn((on) => !on)}
