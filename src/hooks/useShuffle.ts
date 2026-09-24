@@ -17,10 +17,18 @@ export type ShuffleStatus = 'idle' | 'shuffling' | 'done'
  * for exactly as long as whatever it is waiting for. `settle` always leaves
  * it running for a minimum spell, so a quick answer doesn't make the
  * animation look like a glitch.
+ *
+ * `onStep` runs on every flick, e.g. to play a click in time with it.
  */
-export function useShuffle<T>(items: T[]) {
+export function useShuffle<T>(items: T[], onStep?: () => void) {
   const [status, setStatus] = useState<ShuffleStatus>('idle')
   const [current, setCurrent] = useState<T | null>(null)
+
+  // Kept in a ref so a new callback doesn't restart a running shuffle.
+  const stepCallback = useRef(onStep)
+  useEffect(() => {
+    stepCallback.current = onStep
+  }, [onStep])
 
   const stepTimer = useRef<number | undefined>(undefined)
   const settleTimer = useRef<number | undefined>(undefined)
@@ -49,6 +57,7 @@ export function useShuffle<T>(items: T[]) {
       }
       previous = next
       setCurrent(next)
+      stepCallback.current?.()
 
       delay = Math.min(delay * SLOWDOWN, SLOWEST_STEP_MS)
       stepTimer.current = window.setTimeout(step, delay)

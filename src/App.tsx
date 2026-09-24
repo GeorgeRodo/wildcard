@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+import { playError, playReveal, playTick } from './audio/sfx'
 import { AnimalGrid } from './components/AnimalGrid'
 import { Hero } from './components/Hero'
 import { Showcase, type ShowcasePhase } from './components/Showcase'
@@ -8,7 +10,7 @@ import { useShuffle } from './hooks/useShuffle'
 function App() {
   // The shuffle is the local flicker through the wall; the species comes
   // from our database. The shuffle runs until the request has finished.
-  const shuffle = useShuffle(gallery)
+  const shuffle = useShuffle(gallery, playTick)
   const species = useRandomSpecies()
 
   const open = shuffle.status !== 'idle'
@@ -34,6 +36,11 @@ function App() {
         : species.status === 'success'
           ? 'ready'
           : 'loading'
+
+  useEffect(() => {
+    if (phase === 'ready') playReveal()
+    if (phase === 'error') playError()
+  }, [phase])
 
   return (
     <main>
