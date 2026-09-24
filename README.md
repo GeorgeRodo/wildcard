@@ -1,15 +1,15 @@
 # Wildcard
 
-A full-screen wall of wild animal photos. Rest the mouse on a photo and it
-expands to show the animal's scientific name, a short description and a
-weird fact.
+A full-screen wall of wild animal photos that drifts slowly sideways. Rest
+the mouse on a photo and it grows to show the animal's scientific name and
+a weird fact.
 
-Press **Pick an animal** and the wall shuffles like a slot machine, then
-lands on a real species pulled live from the
-[iNaturalist API](https://api.inaturalist.org/v1/docs/): its photo,
-taxonomy, conservation status, sighting count and a summary.
+Press **Pick an animal** and a card shuffles through the wall like a slot
+machine, then lands on one of 2,600 real species: its photo, taxonomy,
+conservation status, sighting count and a summary. The species come from
+[iNaturalist](https://www.inaturalist.org), stored in a Supabase database.
 
-Built with React, TypeScript and Vite.
+Built with React, TypeScript, Vite and Supabase.
 
 ## Getting started
 
@@ -27,6 +27,7 @@ npm run dev
 | `npm run preview` | Preview the production build        |
 | `npm run lint`    | Lint the project with Oxlint        |
 | `npm run optimize-images` | Build web-sized photos from the originals |
+| `npm run seed`    | Fill the Supabase table from iNaturalist |
 
 ## Adding an animal
 
@@ -85,31 +86,50 @@ allowed to show, and each photographer is credited on the card.
 
 ## How the layout works
 
-The wall is always four rows tall. Animals are grouped into columns of
-four, six columns fit across the screen, and the whole strip drifts
+The wall is always five rows tall. Animals are grouped into columns of
+five, six columns fit across the screen, and the whole strip drifts
 slowly to the left so every animal comes round in turn. The track holds
 two copies of the columns: once the first copy has scrolled past, the
 offset jumps back by one copy's width, which lands on the matching column
-and looks seamless.
+and looks seamless. The offset is written straight to the track's
+transform each frame, so scrolling never re-renders React.
 
-Scrolling pauses while a photo is expanded. On portrait screens two
-columns fit across instead of six.
+Resting on a photo for 0.4 seconds scales it up over its neighbours
+rather than resizing it, so nothing else in the wall moves. Scrolling
+pauses while a photo is expanded or the shuffle card is open. On portrait
+screens two columns fit across instead of six.
+
+The title sits on a scrim, a soft blurred shadow, so it stays readable
+whatever photo drifts behind it.
 
 ## Project structure
 
 ```
 src/
+├── api/
+│   ├── supabase.ts         # reads a random animal from our table
+│   └── inaturalist.ts      # fallback: asks iNaturalist directly
 ├── components/
-│   ├── AnimalGrid/    # lays out the rows and decides which tile is expanded
-│   └── AnimalTile/    # one photo and its caption
+│   ├── AnimalGrid/         # the scrolling wall; decides which tile is expanded
+│   ├── AnimalTile/         # one photo and its caption
+│   ├── Hero/               # title and button, with the scrim behind them
+│   ├── Showcase/           # the shuffle card, loading and error states
+│   └── ShuffleButton/
 ├── data/
-│   ├── animals.ts     # names, descriptions and facts
-│   └── gallery.ts     # matches each animal to its photo
+│   ├── animals.ts          # the wall's animals: names, descriptions, facts
+│   └── gallery.ts          # matches each animal to its photo
 ├── hooks/
 │   ├── useHoverIntent.ts   # waits until the pointer rests on a photo
-│   └── useMarquee.ts       # scrolls the wall left, frame by frame
+│   ├── useMarquee.ts       # scrolls the wall left, frame by frame
+│   ├── useShuffle.ts       # the slot-machine flicker
+│   └── useRandomSpecies.ts # fetching, prefetching, errors and retries
 ├── utils/
 │   └── chunk.ts
 └── styles/
     └── global.css
+scripts/
+├── optimize-images.mjs     # resizes photos to WebP
+└── seed-animals.mjs        # harvests species into Supabase
+supabase/
+└── schema.sql              # table, read-only policy, random_animal()
 ```
