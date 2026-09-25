@@ -233,10 +233,13 @@ src/
 │   ├── useMarquee.ts       # scrolls the wall left, frame by frame
 │   ├── useShuffle.ts       # the slot-machine flicker
 │   ├── useRandomSpecies.ts # fetching, prefetching, errors and retries
-│   └── useSoundEnabled.ts  # the mute setting, remembered between visits
+│   ├── useSoundEnabled.ts  # the mute setting
+│   └── useStoredBoolean.ts # settings remembered between visits
 ├── utils/
 │   ├── chunk.ts
-│   └── shiftToFit.ts       # keeps expanded tiles inside the window
+│   ├── rects.ts            # does an open photo cover the title?
+│   ├── shiftToFit.ts       # keeps expanded tiles inside the window
+│   └── wrapOffset.ts       # keeps the looping wall's offset in range
 └── styles/
     └── global.css
 scripts/
@@ -244,6 +247,9 @@ scripts/
 └── seed-animals.mjs        # harvests species into Supabase
 supabase/
 └── schema.sql              # table, read-only policy, random_animal()
+.github/workflows/
+├── ci.yml                  # lint, type-check, test and build on every push
+└── keep-supabase-awake.yml # twice-weekly ping so the free database never pauses
 ```
 
 ## Licence
