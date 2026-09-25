@@ -4,21 +4,48 @@
 
 **Live:** https://wildcard-green.vercel.app
 
-A full-screen wall of wild animal photos that drifts slowly sideways. Rest
-the mouse on a photo and it grows to show the animal's scientific name and
-a weird fact.
+An interactive wall of wild animals, and a slot machine that deals you a
+random one out of 2,600 real species.
 
-Press **Spin the wild** and a card shuffles through the wall like a slot
-machine, then lands on one of 2,600 real species: its photo, taxonomy,
-conservation status, sighting count and a summary. The species come from
-[iNaturalist](https://www.inaturalist.org), stored in a Supabase database.
+The screen is filled with photos of 60 animals, drifting slowly sideways.
+Rest on one and it grows to show the animal's scientific name and a weird
+fact about it. Press **Spin the wild** and a card shuffles through the wall,
+clicking as it goes, then lands with a chime on a real species pulled from a
+database: its photo, taxonomy, conservation status, how often it has been
+seen and a short summary. On a phone the wall can be swiped, and photos open
+with a tap.
 
-The shuffle clicks as it spins and chimes when it lands. The sounds are
-synthesised in the browser with the Web Audio API, so there are no audio
-files, and a toggle in the corner mutes them and remembers your choice.
-A credits panel beside it lists every photographer.
+## What it shows
 
-Built with React, TypeScript, Vite and Supabase.
+- **Real data behind a fast UI.** Species are harvested from the
+  [iNaturalist](https://www.inaturalist.org) API into a Supabase (PostgreSQL)
+  table protected by row-level security. A random pick takes milliseconds
+  instead of iNaturalist's several seconds, the next animal is always
+  prefetched, and the site falls back to calling iNaturalist directly if the
+  database is ever unreachable.
+- **Animation without the jank.** The wall scrolls and swipes by writing to
+  a transform every frame, never re-rendering React. Photos scale up over
+  their neighbours instead of reflowing the page, and are nudged inwards so
+  they never spill off the screen's edges.
+- **Performance.** An image pipeline turns 36 MB of originals into WebP at
+  two sizes, and `srcset` lets a phone download about 2 MB instead of 7.6 MB.
+- **Accessibility.** Dialogs trap and return focus, the moving wall can be
+  paused, controls report their state to screen readers, and hover effects
+  only apply where there is a real pointer.
+- **Tested and checked on every push.** Around 70 tests, including a
+  regression test for a real bug, run in GitHub Actions with the linter, the
+  type-checker and a production build.
+
+## Tech stack
+
+| Area | Tools |
+| --- | --- |
+| Front end | React 19, TypeScript (strict), Vite, CSS Modules |
+| Data | Supabase (PostgreSQL, row-level security, SQL functions), iNaturalist API |
+| Browser APIs | Web Audio (synthesised sound effects), Pointer Events, container queries |
+| Testing | Vitest, React Testing Library, jsdom |
+| Tooling | Oxlint, sharp (image pipeline), GitHub Actions (CI and a database keep-alive) |
+| Hosting | Vercel |
 
 ## Getting started
 
