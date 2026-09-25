@@ -136,17 +136,22 @@ Vitest with React Testing Library, run on every push and pull request by
 GitHub Actions, alongside the linter, the type-checker and a production
 build.
 
-- **Pure logic:** `chunk`, the edge-fitting maths in `shiftToFit`, and the
+- **Pure logic:** `chunk`, the edge-fitting maths in `shiftToFit`,
+  `wrapOffset` for the looping wall, the `rectsOverlap` check, and the
   credits parser, including a check that every photo on the wall has a
   credit.
-- **Hooks:** `useShuffle` and `useHoverIntent`, with fake timers so the
-  tests control time instead of waiting for it: the minimum shuffle
-  duration, never repeating an item, mouse hover versus finger taps.
+- **Hooks:** `useShuffle`, `useHoverIntent` and `useMarquee`, with fake
+  timers so the tests control time instead of waiting for it: the minimum
+  shuffle duration, never repeating an item, mouse hover versus finger taps,
+  and swiping with momentum. `useStoredBoolean` is tested with storage
+  working and blocked.
 - **Components:** the `Modal`'s focus handling, Tab trapping, Escape, and
-  stacked dialogs.
-- **The app:** a full shuffle against a mocked database, plus a regression
-  test for a real bug where "Spin again" never stopped. With the old
-  code put back, that test fails.
+  stacked dialogs; the title stepping aside only when a photo would cover
+  it.
+- **The app:** a full shuffle against a mocked database, tapping photos
+  open and closed, and the pause button. Two regression tests cover real
+  bugs, "Spin again" never stopping and a tap away opening another photo;
+  with the old code put back, each one fails.
 
 ## Mobile
 
@@ -171,8 +176,11 @@ Both dialogs (the shuffle card and the credits) share one `Modal`
 component. It moves focus into the dialog when it opens, keeps Tab cycling
 inside it, closes on Escape or a click outside, and returns focus to the
 button that opened it. Captions stay available to screen readers even while
-they are visually hidden, and the sound toggle reports its state with
-`aria-pressed`.
+they are visually hidden.
+
+The wall moves on its own, so a pause button stops it, as WCAG 2.2.2 asks
+for moving content; the setting is remembered. The pause and sound toggles
+report their state with `aria-pressed`.
 
 ## How the layout works
 
@@ -187,10 +195,16 @@ transform each frame, so scrolling never re-renders React.
 Resting on a photo for 0.4 seconds scales it up over its neighbours
 rather than resizing it, so nothing else in the wall moves. Scrolling
 pauses while a photo is expanded or the shuffle card is open. On portrait
-screens two columns fit across instead of six.
+screens three columns fit across instead of six, and an open photo grows
+further to make up for it. Its caption checks the tile's real height with a
+container query, dropping the scientific name or the fact when space is
+short.
 
 The title sits on a scrim, a soft blurred shadow, so it stays readable
-whatever photo drifts behind it.
+whatever photo drifts behind it; on phones that becomes a frosted panel. It
+steps aside only when an open photo would cover it. The fade animates the
+blur itself rather than the layer's opacity, because a backdrop blur drops
+out while its layer is partly transparent and would snap back at the end.
 
 ## Project structure
 
