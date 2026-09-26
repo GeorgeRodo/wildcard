@@ -68,6 +68,9 @@ export function useRandomSpecies() {
   const ready = useRef<Species | null>(null)
   const pending = useRef<Promise<Species | null> | null>(null)
   const requests = useRef(new Set<AbortController>())
+  // Counts resets, so a request that finishes after its card was closed
+  // knows it is no longer wanted.
+  const generation = useRef(0)
 
   /** The slow path: ask iNaturalist for a random sighting right now. */
   const fetchFromInaturalist = useCallback(
@@ -143,9 +146,16 @@ export function useRandomSpecies() {
     }
 
     setStatus('loading')
+    const requestedIn = generation.current
 
     try {
       const result = (await (pending.current ?? fetchOne())) ?? null
+
+      // Closed while it was loading: keep the animal for the next press.
+      if (requestedIn !== generation.current) {
+        if (result) ready.current = result
+        return
+      }
       ready.current = null
 
       if (!result) throw new ApiError('iNaturalist did not send an animal back.')
@@ -153,6 +163,7 @@ export function useRandomSpecies() {
       setSpecies(result)
       setStatus('success')
     } catch (cause) {
+      if (requestedIn !== generation.current) return
       setError(describe(cause))
       setStatus('error')
     }
@@ -161,6 +172,7 @@ export function useRandomSpecies() {
   }, [fetchOne, prefetch])
 
   const reset = useCallback(() => {
+    generation.current += 1
     setStatus('idle')
     setSpecies(null)
     setError(null)

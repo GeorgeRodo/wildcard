@@ -12,9 +12,12 @@ vi.mock('./audio/sfx', () => ({
 }))
 
 let served = 0
+/** How long the mocked database takes to answer. */
+let latency = 0
 vi.mock('./api/supabase', () => ({
   supabaseConfigured: true,
   fetchRandomAnimal: vi.fn(async (): Promise<Species> => {
+    await new Promise((resolve) => setTimeout(resolve, latency))
     served += 1
     return {
       taxonId: served,
@@ -42,6 +45,7 @@ const spinAgainButton = () => screen.queryByRole('button', { name: 'Spin again' 
 describe('App', () => {
   beforeEach(() => {
     served = 0
+    latency = 0
     vi.useFakeTimers()
   })
 
@@ -159,5 +163,24 @@ describe('App', () => {
 
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
     expect(pick).toHaveFocus()
+  })
+
+  // Regression: a card closed while its animal was still loading used to
+  // open itself again, with a chime, once the answer arrived.
+  it('stays closed when closed before the animal has arrived', async () => {
+    const { playReveal } = await import('./audio/sfx')
+    vi.mocked(playReveal).mockClear()
+    latency = 8000
+    render(<App />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Spin the wild' }))
+    await wait(2000)
+    fireEvent.keyDown(window, { key: 'Escape' })
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+
+    await wait(20000)
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(playReveal).not.toHaveBeenCalled()
   })
 })

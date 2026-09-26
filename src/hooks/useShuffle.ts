@@ -33,6 +33,9 @@ export function useShuffle<T>(items: T[], onStep?: () => void) {
   const stepTimer = useRef<number | undefined>(undefined)
   const settleTimer = useRef<number | undefined>(undefined)
   const startedAt = useRef(0)
+  // Whether a shuffle is under way, so a late `settle` can't revive one
+  // that has already been reset.
+  const running = useRef(false)
 
   const clearTimers = useCallback(() => {
     window.clearTimeout(stepTimer.current)
@@ -43,6 +46,7 @@ export function useShuffle<T>(items: T[], onStep?: () => void) {
     if (items.length === 0) return
 
     clearTimers()
+    running.current = true
     startedAt.current = performance.now()
     setStatus('shuffling')
 
@@ -68,12 +72,14 @@ export function useShuffle<T>(items: T[], onStep?: () => void) {
 
   /** Stops the shuffle, once it has run for its minimum spell. */
   const settle = useCallback(() => {
+    if (!running.current) return
     window.clearTimeout(settleTimer.current)
 
     const remaining = MIN_DURATION_MS - (performance.now() - startedAt.current)
     settleTimer.current = window.setTimeout(
       () => {
         window.clearTimeout(stepTimer.current)
+        running.current = false
         setStatus('done')
       },
       Math.max(0, remaining),
@@ -82,6 +88,7 @@ export function useShuffle<T>(items: T[], onStep?: () => void) {
 
   const reset = useCallback(() => {
     clearTimers()
+    running.current = false
     setStatus('idle')
     setCurrent(null)
   }, [clearTimers])
