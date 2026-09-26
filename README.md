@@ -181,7 +181,8 @@ button that opened it. Captions stay available to screen readers even while
 they are visually hidden.
 
 The wall moves on its own, so a pause button stops it, as WCAG 2.2.2 asks
-for moving content; the setting is remembered. The pause and sound toggles
+for moving content; the setting is remembered. For anyone whose system
+asks for reduced motion, the wall starts paused. The pause and sound toggles
 report their state with `aria-pressed`.
 
 ## How the layout works
