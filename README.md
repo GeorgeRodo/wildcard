@@ -4,6 +4,8 @@
 
 **Live:** https://wildcard-green.vercel.app
 
+![The Wildcard wall of animal photos, with the title and the Spin the wild button in the middle](docs/screenshot.webp)
+
 An interactive wall of wild animals, and a slot machine that deals you a
 random one out of 2,600 real species.
 
