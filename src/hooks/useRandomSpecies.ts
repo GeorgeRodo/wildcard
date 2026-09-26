@@ -99,7 +99,7 @@ export function useRandomSpecies() {
 
       if (supabaseConfigured) {
         try {
-          species = await fetchRandomAnimal(recent.current)
+          species = await fetchRandomAnimal(controller.signal, recent.current)
           await preloadImage(species.photo.url, controller.signal)
         } catch (cause) {
           console.warn('Falling back to iNaturalist:', cause)

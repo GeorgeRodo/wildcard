@@ -45,12 +45,16 @@ const toSpecies = (row: AnimalRow): Species => ({
  * species were harvested from iNaturalist ahead of time, so reading one
  * takes a few dozen milliseconds instead of several seconds.
  */
-export async function fetchRandomAnimal(exclude: number[] = []): Promise<Species> {
+export async function fetchRandomAnimal(
+  signal: AbortSignal,
+  exclude: number[] = [],
+): Promise<Species> {
   if (!client) throw new ApiError('Supabase is not configured.')
 
   // The function returns a set, but always of one row at most.
   const { data, error } = await client
     .rpc('random_animal', { exclude_ids: exclude })
+    .abortSignal(signal)
     .maybeSingle<AnimalRow>()
 
   if (error) throw new ApiError(`The animal database said: ${error.message}`)
