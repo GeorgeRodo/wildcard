@@ -12,13 +12,17 @@ import type { Rect } from './utils/rects'
 import { useSoundEnabled } from './hooks/useSoundEnabled'
 import { useStoredBoolean } from './hooks/useStoredBoolean'
 
+/** Visitors who ask their system for less motion start with the wall still. */
+const prefersReducedMotion = () =>
+  window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
+
 function App() {
   // The shuffle is the local flicker through the wall; the species comes
   // from our database. The shuffle runs until the request has finished.
   const shuffle = useShuffle(gallery, playTick)
   const species = useRandomSpecies()
   const [soundOn, setSoundOn] = useSoundEnabled()
-  const [wallPaused, setWallPaused] = useStoredBoolean('wildcard:wall-paused', false)
+  const [wallPaused, setWallPaused] = useStoredBoolean('wildcard:wall-paused', prefersReducedMotion())
   const [creditsOpen, setCreditsOpen] = useState(false)
   const [openPhotoArea, setOpenPhotoArea] = useState<Rect | null>(null)
 

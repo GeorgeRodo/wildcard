@@ -150,6 +150,23 @@ describe('App', () => {
     expect(offset()).toBeLessThan(stoppedAt)
   })
 
+  it('starts with the wall still when the system asks for less motion', () => {
+    localStorage.clear()
+    vi.stubGlobal('matchMedia', (query: string) => ({
+      matches: query === '(prefers-reduced-motion: reduce)',
+    }))
+
+    try {
+      render(<App />)
+      expect(screen.getByRole('button', { name: 'Pause the wall' })).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      )
+    } finally {
+      vi.unstubAllGlobals()
+    }
+  })
+
   it('closes the card and hands focus back to the button', async () => {
     render(<App />)
     await wait(3000)
