@@ -34,10 +34,13 @@ create policy "Animals are readable by everyone"
 
 -- Picking a random row. `order by random()` reads the whole table, which is
 -- fine at a few thousand rows and keeps the query honest and simple.
+-- Volatile, because it returns something different every call, and with an
+-- empty search path so it can only ever reach the table named in full.
 create or replace function public.random_animal(exclude_ids bigint[] default '{}')
 returns setof public.animals
 language sql
-stable
+volatile
+set search_path = ''
 as $$
   select *
   from public.animals
