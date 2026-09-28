@@ -19,6 +19,15 @@ const INTERACTIVE = 'a[href], button, input, select, textarea, summary, [content
 const prefersReducedMotion = () =>
   window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
 
+/**
+ * Loads every small photo in the background once the page is idle, so the
+ * shuffle can flick through them without waiting. The wall loads them
+ * lazily, so the ones off screen wouldn't be there yet otherwise.
+ */
+function warmShufflePhotos() {
+  for (const animal of gallery) new Image().src = animal.imageSmall
+}
+
 function App() {
   // The shuffle is the local flicker through the wall; the species comes
   // from our database. The shuffle runs until the request has finished.
@@ -30,6 +39,16 @@ function App() {
   const [openPhotoArea, setOpenPhotoArea] = useState<Rect | null>(null)
 
   const open = shuffle.status !== 'idle'
+
+  useEffect(() => {
+    // Safari only gained requestIdleCallback recently.
+    if (typeof window.requestIdleCallback === 'function') {
+      const id = requestIdleCallback(warmShufflePhotos, { timeout: 3000 })
+      return () => cancelIdleCallback(id)
+    }
+    const id = window.setTimeout(warmShufflePhotos, 1000)
+    return () => window.clearTimeout(id)
+  }, [])
 
   const start = () => {
     shuffle.start()
