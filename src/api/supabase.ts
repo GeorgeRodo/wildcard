@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
+import type { SupabaseClient } from '@supabase/supabase-js'
 import { ApiError, type Species } from './inaturalist'
 
 const url = import.meta.env.VITE_SUPABASE_URL
@@ -7,9 +7,23 @@ const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 /** Without credentials the site falls back to calling iNaturalist directly. */
 export const supabaseConfigured = Boolean(url && anonKey)
 
-const client = supabaseConfigured
-  ? createClient(url, anonKey, { auth: { persistSession: false } })
-  : null
+/**
+ * The Supabase library is most of the site's JavaScript, so it is loaded on
+ * its own after the page, rather than holding up the first paint. The first
+ * animal is prefetched as soon as the page mounts, which is what loads it.
+ */
+let client: Promise<SupabaseClient> | null = null
+
+function getClient() {
+  client ??= import('@supabase/supabase-js')
+    .then(({ createClient }) => createClient(url, anonKey, { auth: { persistSession: false } }))
+    .catch((cause: unknown) => {
+      // A dropped connection shouldn't rule the database out for the whole visit.
+      client = null
+      throw cause
+    })
+  return client
+}
 
 interface AnimalRow {
   taxon_id: number
@@ -49,10 +63,10 @@ export async function fetchRandomAnimal(
   signal: AbortSignal,
   exclude: number[] = [],
 ): Promise<Species> {
-  if (!client) throw new ApiError('Supabase is not configured.')
+  if (!supabaseConfigured) throw new ApiError('Supabase is not configured.')
 
   // The function returns a set, but always of one row at most.
-  const { data, error } = await client
+  const { data, error } = await (await getClient())
     .rpc('random_animal', { exclude_ids: exclude })
     .abortSignal(signal)
     .maybeSingle<AnimalRow>()
