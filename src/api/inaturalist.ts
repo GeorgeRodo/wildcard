@@ -8,6 +8,8 @@
  * an arbitrary one, and it searches much faster than sorting by votes.
  */
 
+import { cleanSummary, largePhoto } from './format'
+
 const API = 'https://api.inaturalist.org/v1'
 
 /** Animals only: no plants, fungi or unknowns. */
@@ -44,29 +46,6 @@ export interface Species {
 }
 
 export class ApiError extends Error {}
-
-/** iNaturalist serves several sizes from one URL. */
-const largePhoto = (url: string) => url.replace(/\/(square|small|medium)\./, '/large.')
-
-/** Longest summary to show before trimming to the last full sentence. */
-const SUMMARY_LIMIT = 360
-
-function cleanSummary(html: string) {
-  const text = html
-    .replace(/<[^>]+>/g, '')
-    // Wikipedia leaves pronunciation asides like "(help·info)" behind.
-    .replace(/\(\s*help\s*[·.]\s*info\s*\)/gi, '')
-    .replace(/\(\s*\)/g, '')
-    .replace(/\s+([;,.])/g, '$1')
-    .replace(/\s+/g, ' ')
-    .trim()
-
-  if (text.length <= SUMMARY_LIMIT) return text
-
-  const cut = text.slice(0, SUMMARY_LIMIT)
-  const lastSentence = cut.lastIndexOf('. ')
-  return lastSentence > 120 ? cut.slice(0, lastSentence + 1) : `${cut.trimEnd()}…`
-}
 
 /** Taxon details rarely change, so keep them for the session. */
 const taxonCache = new Map<number, { summary: string; conservationStatus: string | null; observationCount: number | null }>()
@@ -126,7 +105,7 @@ export async function fetchTaxonDetails(
   const taxon = data.results?.[0]
 
   const details = {
-    summary: taxon?.wikipedia_summary ? cleanSummary(taxon.wikipedia_summary) : '',
+    summary: cleanSummary(taxon?.wikipedia_summary),
     conservationStatus: taxon?.conservation_status?.status_name ?? null,
     observationCount: taxon?.observations_count ?? null,
   }

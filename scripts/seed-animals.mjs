@@ -9,6 +9,7 @@
  */
 import { readFile } from 'node:fs/promises'
 import { createClient } from '@supabase/supabase-js'
+import { cleanSummary, largePhoto } from '../src/api/format.ts'
 
 const INAT = 'https://api.inaturalist.org/v1'
 const ICONIC_TAXA =
@@ -46,23 +47,6 @@ async function getJson(path) {
   })
   if (!response.ok) throw new Error(`iNaturalist replied with ${response.status}`)
   return response.json()
-}
-
-const largePhoto = (url) => url.replace(/\/(square|small|medium)\./, '/large.')
-
-function cleanSummary(html) {
-  const text = (html ?? '')
-    .replace(/<[^>]+>/g, '')
-    .replace(/\(\s*help\s*[·.]\s*info\s*\)/gi, '')
-    .replace(/\(\s*\)/g, '')
-    .replace(/\s+([;,.])/g, '$1')
-    .replace(/\s+/g, ' ')
-    .trim()
-
-  if (text.length <= 360) return text
-  const cut = text.slice(0, 360)
-  const lastSentence = cut.lastIndexOf('. ')
-  return lastSentence > 120 ? cut.slice(0, lastSentence + 1) : `${cut.trimEnd()}…`
 }
 
 // One observation per species, keeping the first (most faved) photo we see.
