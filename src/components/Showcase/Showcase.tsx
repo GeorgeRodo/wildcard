@@ -45,11 +45,14 @@ export function Showcase({
           </div>
         ) : (
           <>
+            {/* One image whose source changes, never a new one per flick:
+                browsers keep showing the current photo until the next has
+                loaded, so a slow one can't flash the card black. The
+                shuffle uses the small photos, which the wall has loaded. */}
             <img
               className={styles.image}
-              src={ready ? species.photo.url : (teaser?.image ?? '')}
+              src={ready ? species.photo.url : (teaser?.imageSmall ?? '')}
               alt={ready ? species.name : ''}
-              key={ready ? species.photo.url : teaser?.id}
             />
 
             <div className={styles.info} aria-live="polite">

@@ -190,6 +190,24 @@ describe('App', () => {
     expect(screen.queryByRole('dialog', { name: 'Random animal' })).not.toBeInTheDocument()
   })
 
+  // Regression: each flick used to mount a new image of the large photo,
+  // which the wall never loads, so the card showed black while it arrived.
+  it('flicks through the small photos in one image rather than a new one each time', async () => {
+    render(<App />)
+    await wait(3000)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Spin the wild' }))
+    const dialog = screen.getByRole('dialog', { name: 'Random animal' })
+    const image = dialog.querySelector('img')!
+    const firstPhoto = image.getAttribute('src')
+
+    await wait(200)
+
+    expect(dialog.querySelector('img')).toBe(image)
+    expect(image.getAttribute('src')).not.toBe(firstPhoto)
+    expect(image.getAttribute('src')).toContain('/small/')
+  })
+
   it('closes the card and hands focus back to the button', async () => {
     render(<App />)
     await wait(3000)
