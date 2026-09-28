@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { playError, playReveal, playTick } from './audio/sfx'
 import { AnimalGrid } from './components/AnimalGrid'
 import { Credits } from './components/Credits'
@@ -11,6 +11,9 @@ import { useShuffle } from './hooks/useShuffle'
 import type { Rect } from './utils/rects'
 import { useSoundEnabled } from './hooks/useSoundEnabled'
 import { useStoredBoolean } from './hooks/useStoredBoolean'
+
+/** Anything that already does its own thing when Enter is pressed on it. */
+const INTERACTIVE = 'a[href], button, input, select, textarea, summary, [contenteditable]'
 
 /** Visitors who ask their system for less motion start with the wall still. */
 const prefersReducedMotion = () =>
@@ -35,6 +38,30 @@ function App() {
     // is no change at all, and the shuffle would never stop.
     void species.load().finally(shuffle.settle)
   }
+
+  // Enter spins from anywhere on the wall, so a keyboard needs no aiming.
+  // Kept in a ref so the listener always calls the latest `start`.
+  const startRef = useRef(start)
+  useEffect(() => {
+    startRef.current = start
+  })
+
+  const dialogOpen = open || creditsOpen
+  useEffect(() => {
+    if (dialogOpen) return
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Enter' || event.repeat) return
+      if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return
+      if (event.target instanceof Element && event.target.closest(INTERACTIVE)) return
+
+      event.preventDefault()
+      startRef.current()
+    }
+
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [dialogOpen])
 
   const close = () => {
     shuffle.reset()

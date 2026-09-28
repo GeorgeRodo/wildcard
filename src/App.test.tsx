@@ -167,6 +167,29 @@ describe('App', () => {
     }
   })
 
+  it('spins when Enter is pressed anywhere on the wall', async () => {
+    render(<App />)
+    await wait(3000)
+
+    fireEvent.keyDown(document.body, { key: 'Enter' })
+    expect(screen.getByRole('dialog', { name: 'Random animal' })).toBeInTheDocument()
+
+    // With the card open, Enter belongs to its buttons and doesn't spin again.
+    await wait(3000)
+    const shown = screen.getByRole('heading', { name: /^Test animal/ }).textContent
+    fireEvent.keyDown(document.body, { key: 'Enter' })
+    await wait(3000)
+    expect(screen.getByRole('heading', { name: /^Test animal/ }).textContent).toBe(shown)
+  })
+
+  it('leaves Enter alone on other controls', () => {
+    render(<App />)
+
+    fireEvent.keyDown(screen.getByRole('button', { name: 'Credits' }), { key: 'Enter' })
+
+    expect(screen.queryByRole('dialog', { name: 'Random animal' })).not.toBeInTheDocument()
+  })
+
   it('closes the card and hands focus back to the button', async () => {
     render(<App />)
     await wait(3000)

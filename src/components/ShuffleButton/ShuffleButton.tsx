@@ -6,7 +6,8 @@ interface ShuffleButtonProps {
 
 export function ShuffleButton({ onClick }: ShuffleButtonProps) {
   return (
-    <button type="button" className={styles.button} onClick={onClick}>
+    // Enter spins from anywhere on the page; see App.
+    <button type="button" className={styles.button} aria-keyshortcuts="Enter" onClick={onClick}>
       Spin the wild
     </button>
   )
