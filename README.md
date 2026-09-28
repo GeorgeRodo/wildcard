@@ -31,11 +31,13 @@ with a tap.
   they never spill off the screen's edges.
 - **Performance.** An image pipeline turns 36 MB of originals into WebP at
   two sizes, and `srcset` lets a phone download about 2 MB instead of 7.6 MB.
-- **Accessibility.** Dialogs trap and return focus, the moving wall can be
-  paused, controls report their state to screen readers, and hover effects
+  The database library loads after the page, which cuts the first download
+  from 144 KB to 90 KB of gzipped JavaScript.
+- **Accessibility.** Dialogs trap and return focus, Enter spins from
+  anywhere, the moving wall can be paused, controls report their state to screen readers, and hover effects
   only apply where there is a real pointer.
-- **Tested and checked on every push.** Around 70 tests, including a
-  regression test for a real bug, run in GitHub Actions with the linter, the
+- **Tested and checked on every push.** Almost 80 tests, including
+  regression tests for real bugs, run in GitHub Actions with the linter, the
   type-checker and a production build.
 
 ## Tech stack
@@ -139,8 +141,8 @@ GitHub Actions, alongside the linter, the type-checker and a production
 build.
 
 - **Pure logic:** `chunk`, the edge-fitting maths in `shiftToFit`,
-  `wrapOffset` for the looping wall, the `rectsOverlap` check, and the
-  credits parser, including a check that every photo on the wall has a
+  `wrapOffset` for the looping wall, the `rectsOverlap` check, the
+  summary cleanup shared with the seed script, and the credits parser, including a check that every photo on the wall has a
   credit.
 - **Hooks:** `useShuffle`, `useHoverIntent` and `useMarquee`, with fake
   timers so the tests control time instead of waiting for it: the minimum
@@ -151,9 +153,10 @@ build.
   stacked dialogs; the title stepping aside only when a photo would cover
   it.
 - **The app:** a full shuffle against a mocked database, tapping photos
-  open and closed, and the pause button. Two regression tests cover real
-  bugs, "Spin again" never stopping and a tap away opening another photo;
-  with the old code put back, each one fails.
+  open and closed, the pause button, and Enter to spin. Three regression
+  tests cover real bugs: "Spin again" never stopping, a tap away opening
+  another photo, and a card closed while loading opening itself again. With
+  the old code put back, each one fails.
 
 ## Mobile
 
@@ -185,6 +188,11 @@ for moving content; the setting is remembered. For anyone whose system
 asks for reduced motion, the wall starts paused. The pause and sound toggles
 report their state with `aria-pressed`.
 
+Pressing Enter spins from anywhere on the wall, so a keyboard doesn't have
+to tab its way to the button first. Enter on any other control still does
+that control's job, and the button announces the shortcut with
+`aria-keyshortcuts`.
+
 ## How the layout works
 
 The wall is always five rows tall. Animals are grouped into columns of
@@ -215,7 +223,8 @@ out while its layer is partly transparent and would snap back at the end.
 src/
 ├── api/
 │   ├── supabase.ts         # reads a random animal from our table
-│   └── inaturalist.ts      # fallback: asks iNaturalist directly
+│   ├── inaturalist.ts      # fallback: asks iNaturalist directly
+│   └── format.ts           # tidies summaries; shared with the seed script
 ├── audio/
 │   └── sfx.ts              # synthesised tick, chime and error sounds
 ├── components/
